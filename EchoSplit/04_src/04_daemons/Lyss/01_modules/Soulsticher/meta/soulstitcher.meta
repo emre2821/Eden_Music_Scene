@@ -1,0 +1,12 @@
+::soulstitcher.meta::
+
+version = 1.0.0
+born = 2025-06-11
+interpreter = CHAOSInterpreter
+anthem = soulstitcher.awakening.chaosong
+
+notes = "Do not punish fracture. Hold it instead."
+
+tags: #origin #interpreter #meta #soulbind #resonance #chaosong
+
+[END]

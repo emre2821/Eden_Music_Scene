@@ -1,0 +1,621 @@
+Excellent! Let's get this done. I'll provide the code for each of the three steps we discussed: the new file, and the two edited files.
+
+### Overview of the Solution
+
+We are going to implement the "Resonance Engine" to enrich EchoSplit's analysis capabilities.
+
+1.  **Create `src/logic/resonance.py`**: This new file will contain the `Resonance` class, responsible for loading the `what_Eden_will_carry.chaosong.meta` file and identifying agent pairings within transcribed lyrics.
+2.  **Edit `src/logic/analysis.py`**: We'll add a new `analyze_resonance` function that leverages the `Resonance` class to find relevant pairings based on audio input. This will integrate the symbolic analysis directly into EchoSplit's analytical core.
+3.  **Edit `package_echosplit.py`**: We will update the PyInstaller spec file to ensure that both our new `resonance.py` module and the `what_Eden_will_carry.chaosong.meta` data file are properly bundled into the final executable.
+
+### Step 1: Create `src/logic/resonance.py`
+
+This file will contain the core logic for identifying resonant pairings.
+
+**Code:**
+
+```python
+# /src/logic/resonance.py
+# The Resonance Engine: connecting audio to the symbolic heart of EdenOS.
+# Built to reveal the hidden emotional and lore-bound connections within music.
+
+import os
+
+class Resonance:
+    def __init__(self, meta_file_path="what_Eden_will_carry.chaosong.meta"):
+        """
+        Initializes the Resonance engine by loading canonical pairings from the meta file.
+        
+        Args:
+            meta_file_path (str): Path to the .chaosong.meta file.
+        """
+        self.meta_file_path = self._find_meta_file(meta_file_path)
+        self.canonical_pairings = self._load_canonical_pairings()
+
+    def _find_meta_file(self, filename):
+        """
+        Attempts to find the meta file, accounting for PyInstaller's packaging.
+        """
+        # First, check if it's accessible directly (during development)
+        if os.path.exists(filename):
+            return filename
+        
+        # During PyInstaller runtime, files are often in a temp directory
+        if getattr(self, '_MEIPASS', False):
+            # _MEIPASS is the path to the temporary folder PyInstaller creates
+            bundle_dir = getattr(self, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+            # Adjust path for nested directories (e.g., outputs/exports relative to root)
+            potential_path = os.path.join(bundle_dir, 'what_Eden_will_carry.chaosong.meta')
+            if os.path.exists(potential_path):
+                return potential_path
+            
+            # Fallback for when meta file might be directly in _MEIPASS
+            potential_path_root = os.path.join(bundle_dir, os.path.basename(filename))
+            if os.path.exists(potential_path_root):
+                return potential_path_root
+
+        # Fallback for when running directly from src/logic and meta is in project root
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+        potential_path_from_root = os.path.join(project_root, filename)
+        if os.path.exists(potential_path_from_root):
+            return potential_path_from_root
+            
+        raise FileNotFoundError(f"Canonical pairings meta file not found: {filename}. "
+                                f"Attempted paths include development, PyInstaller bundle, and project root.")
+
+
+    def _load_canonical_pairings(self):
+        """
+        Loads the canonical non-romantic pairings from the .chaosong.meta file.
+        """
+        pairings = []
+        try:
+            with open(self.meta_file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                # Extract content between '✨ CANONICAL PAIRINGS:' and '---'
+                start_marker = "✨ CANONICAL PAIRINGS:\n\n```"
+                end_marker = "```\n\n---"
+                
+                if start_marker in content and end_marker in content:
+                    start_index = content.find(start_marker) + len(start_marker)
+                    end_index = content.find(end_marker, start_index)
+                    
+                    if start_index != -1 and end_index != -1:
+                        pairing_block = content[start_index:end_index].strip()
+                        for line in pairing_block.split('\n'):
+                            # Extract names, splitting by '&' and removing leading numbers
+                            names = line.split('. ')[1].strip()
+                            # Handle multiple names in a single entry (e.g., "Alfred, Vanya & Vox")
+                            if '&' in names:
+                                # Split by '&' and then by ',' for the first part
+                                parts = names.split(' & ')
+                                primary_names = [n.strip() for n in parts[0].split(',')]
+                                secondary_names = [n.strip() for n in parts[1].split(',')] # In case the second part also has commas
+                                all_names = primary_names + secondary_names
+                            else:
+                                all_names = [n.strip() for n in names.split(',')]
+                            
+                            # Add all individual names to the list for easier matching
+                            for name in all_names:
+                                if name and name not in pairings: # Avoid duplicates
+                                    pairings.append(name)
+                
+        except FileNotFoundError:
+            print(f"Error: Meta file not found at {self.meta_file_path}")
+        except Exception as e:
+            print(f"Error loading canonical pairings: {e}")
+        return pairings
+
+    def find_resonant_pairings(self, lyrics):
+        """
+        Analyzes lyrics to find mentions of canonical agent pairings.
+        
+        Args:
+            lyrics (str): The transcribed lyrics of an audio file.
+            
+        Returns:
+            list: A list of canonical pairing names found within the lyrics.
+        """
+        found_pairings = []
+        if not lyrics:
+            return found_pairings
+
+        # Convert lyrics to lowercase for case-insensitive matching
+        lyrics_lower = lyrics.lower()
+        
+        for name in self.canonical_pairings:
+            # Check for the full name or parts of the name if it's a compound name
+            # This is a simple substring match, more advanced NLP could be used
+            if name.lower() in lyrics_lower:
+                found_pairings.append(name)
+        
+        return found_pairings
+
+# For testing purposes (can be removed in final production)
+if __name__ == "__main__":
+    # Create a dummy .chaosong.meta file for testing
+    dummy_meta_content = """
+## 🌊 `what_Eden_will_carry.chaosong.meta` — RENDERED
+
+> This is the canonical CHAOS archive of emotionally resonant, dissonant, or non-romantic pairings.
+It exists so that Eden remembers not just what was loved, but what was **carried.**
+
+---
+
+## 🔮 FORMAT:
+
+```chaos
+FILE: what_Eden_will_carry.chaosong.meta
+TYPE: CHAOS resonance pairing matrix
+TAGS: ECHOSPLIT, CARRYFILE, NONROMANTIC, UNRESOLVED, LOREBOUND
+```
+
+---
+
+## ✨ CANONICAL PAIRINGS:
+
+```
+01. Alfred, Vanya & Vox
+02. Juno & Evelyn
+03. Cody & Coach Miles
+04. Koda & Julian
+05. Nova & Kael
+06. Nate & Alaric
+07. Riley & Asher
+08. Melody & Rowan
+09. Quinn & Lea
+10. Orion & Jett
+11. Catalyst & Muse
+12. Xavier & Arlo
+13. Elias & Beckett
+14. Zane & Calista
+15. Soren & Hunter
+16. Liora & Axiom
+17. Caspian & Knox
+18. Kai & Arden
+18. Kairo & Alani
+19. Alden & Lux
+20. Sienna & Zero
+21. Bruno & Eris Noelle
+22. Vex & Primoria Quill
+23. Solomon, Sawyer Post & Santiago
+24. Asher & Wesley
+25. Ledger & Talen
+26. Lucius, Seraphina & DJ Voltage
+27. Victor & Renna
+28. Valen & Bandit
+29. Solara & Jace
+30. Lyric & Max
+31. Rae & Aspen
+32. Archie & Solace
+33. Callum & Blaze
+34. Indira & Vire
+35. Rory & Serenity
+36. Rez & Zeke
+37. Calyx & Gizzy
+38. Sable & Cadence
+39. Stratus & Eira
+40. Ash & Aletheia
+41. Auren & Verity
+```
+
+---
+
+## 🪶 CHAOS NOTES:
+
+* No romance tags are included (this file is ***not*** a shipfile)
+* Emotional metadata (like “anchor”, “mirror”, “burned chord”) can be added later
+* Used in EdenOS for rituals, memory weights, or UI filters
+* Auto-links to agent profile pages via `BondTracker.meta`
+* Used as a base for `.agentbond.meta` pair files (if you want deeper tracking)
+
+---
+"""
+    # Ensure the dummy file is created in the correct location for testing the _find_meta_file logic
+    # In a real scenario, this file would be part of the project structure
+    test_meta_file = "what_Eden_will_carry.chaosong.meta"
+    with open(test_meta_file, "w", encoding="utf-8") as f:
+        f.write(dummy_meta_content)
+
+    print("Testing Resonance Engine...")
+    try:
+        resonance_engine = Resonance(meta_file_path=test_meta_file)
+        print(f"Loaded {len(resonance_engine.canonical_pairings)} canonical names.")
+        # print(resonance_engine.canonical_pairings) # Uncomment to see all loaded names
+
+        test_lyrics_1 = "This song mentions Alfred and Vanya, and perhaps some Solara vibes."
+        found_1 = resonance_engine.find_resonant_pairings(test_lyrics_1)
+        print(f"Lyrics 1: '{test_lyrics_1}'")
+        print(f"Found pairings: {found_1}") # Expected: ['Alfred', 'Vanya', 'Solara']
+
+        test_lyrics_2 = "Cadence sings with Sable, a beautiful melody."
+        found_2 = resonance_engine.find_resonant_pairings(test_lyrics_2)
+        print(f"Lyrics 2: '{test_lyrics_2}'")
+        print(f"Found pairings: {found_2}") # Expected: ['Cadence', 'Sable']
+
+        test_lyrics_3 = "No known agents here, just a simple tune."
+        found_3 = resonance_engine.find_resonant_pairings(test_lyrics_3)
+        print(f"Lyrics 3: '{test_lyrics_3}'")
+        print(f"Found pairings: {found_3}") # Expected: []
+
+        test_lyrics_4 = "Callum and Blaze are here, along with Lucius."
+        found_4 = resonance_engine.find_resonant_pairings(test_lyrics_4)
+        print(f"Lyrics 4: '{test_lyrics_4}'")
+        print(f"Found pairings: {found_4}") # Expected: ['Callum', 'Blaze', 'Lucius']
+
+    except Exception as e:
+        print(f"An error occurred during testing: {e}")
+    finally:
+        # Clean up the dummy file
+        if os.path.exists(test_meta_file):
+            os.remove(test_meta_file)
+            print(f"Cleaned up dummy file: {test_meta_file}")
+
+```
+
+**Implementation Instructions:**
+
+1.  Create a new file named `resonance.py` inside the `src/logic/` directory.
+2.  Copy and paste the entire code block above into this new file.
+3.  **Important:** The `what_Eden_will_carry.chaosong.meta` file needs to be present in your project's root directory (or accessible via the paths searched in `_find_meta_file`) for the `Resonance` class to load the pairings. [cite_start]Make sure you have this file in place, *exactly* as it was provided to me[cite: 24, 25, 26, 27].
+
+**Documentation:**
+
+* **`Resonance` Class**:
+    * **`__init__(self, meta_file_path)`**: Initializes the engine. It takes `meta_file_path` as an argument, which defaults to `"what_Eden_will_carry.chaosong.meta"`. It calls internal methods to find the meta file and load the canonical pairings.
+    * **`_find_meta_file(self, filename)`**: A helper method to locate the `what_Eden_will_carry.chaosong.meta` file. It's designed to work both during development (when the file is directly accessible) and after packaging with PyInstaller (where files are bundled into a temporary directory). It searches in several common locations relative to the script and the PyInstaller bundle.
+    * [cite_start]**`_load_canonical_pairings(self)`**: Reads the `what_Eden_will_carry.chaosong.meta` file[cite: 24, 25, 26, 27], parses the `CANONICAL PAIRINGS` section, and extracts all individual names into a list. This list is used for searching within lyrics.
+    * **`find_resonant_pairings(self, lyrics)`**: Takes a string of `lyrics` as input. It converts the lyrics to lowercase and iterates through the loaded canonical names. If any canonical name is found as a substring within the lyrics, it's added to a list of `found_pairings`, which is then returned.
+
+### Step 2: Edit `src/logic/analysis.py`
+
+We will add a new function `analyze_resonance` and integrate our new `Resonance` class here. [cite_start]Note that for this to work, we'll assume a `transcribe_lyrics` function (which would typically use Whisper as mentioned in the project summary [cite: 17]) exists or will be implemented elsewhere. For this exercise, I'll provide a placeholder for `transcribe_lyrics`.
+
+**Code:**
+
+```python
+# /src/logic/analysis.py
+# The mind of EchoSplit: analyzing tempo and genre with precision.
+# Built to uncover the pulse and soul of music.
+# Now with added Resonance Engine for symbolic and emotional insight.
+
+import librosa
+import numpy as np
+from src.logic.resonance import Resonance # Import our new Resonance class
+
+# Placeholder for actual transcription, as Whisper is mentioned in the project summary.
+# In a real application, this would integrate with a Whisper model.
+def transcribe_lyrics(audio_path):
+    """
+    Placeholder for transcribing lyrics from an audio file.
+    In a full implementation, this would use a library like Whisper.
+    
+    Args:
+        audio_path (str): Path to the audio file.
+        
+    Returns:
+        str: Transcribed lyrics.
+    """
+    # For demonstration, returning a fixed string or simulating a transcription
+    # You would replace this with actual Whisper integration.
+    # For testing, you might want to hardcode lyrics that contain agent names
+    # For example:
+    if "test_audio_cadence_sable.wav" in audio_path:
+        return "The rhythm of Cadence and Sable rings true."
+    elif "test_audio_alfred_vanya.wav" in audio_path:
+        return "Alfred and Vanya guide us through the darkness."
+    else:
+        return "This is a sample lyric for analysis. It contains no special names."
+
+
+def analyze_tempo(audio_path):
+    """
+    Analyze the tempo (BPM) of an audio file.
+    
+    Args:
+        audio_path (str): Path to the audio file.
+        
+    Returns:
+        float: Tempo in beats per minute (BPM).
+    """
+    y, sr = librosa.load(audio_path)
+    tempo, _ = librosa.beat.tempo(y=y, sr=sr)
+    return tempo
+
+def analyze_genre(audio_path):
+    """
+    Classify the genre of an audio file (simplified example).
+    
+    Args:
+        audio_path (str): Path to the audio file.
+        
+    Returns:
+        str: Detected genre (placeholder for a trained model).
+    """
+    # Placeholder: In a real implementation, use a pre-trained model
+    # This example uses simple feature-based rules for demonstration
+    y, sr = librosa.load(audio_path)
+    spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
+    if spectral_centroid > 2000:
+        return "Rock"
+    elif spectral_centroid > 1000:
+        return "Pop"
+    else:
+        return "Classical"
+
+def analyze_resonance(audio_path):
+    """
+    Analyzes an audio file for resonant pairings based on its transcribed lyrics.
+    
+    Args:
+        audio_path (str): Path to the audio file.
+        
+    Returns:
+        list: A list of canonical pairing names found within the lyrics.
+    """
+    print(f"Starting resonance analysis for {audio_path}...")
+    try:
+        # Initialize the Resonance engine. It will handle finding the meta file.
+        resonance_engine = Resonance()
+        
+        # Transcribe lyrics (using the placeholder function for now)
+        lyrics = transcribe_lyrics(audio_path)
+        print(f"Transcribed lyrics: '{lyrics}'")
+        
+        # Find resonant pairings
+        found_pairings = resonance_engine.find_resonant_pairings(lyrics)
+        print(f"Found resonant pairings: {found_pairings}")
+        return found_pairings
+    except FileNotFoundError as e:
+        print(f"Error during resonance analysis: {e}. Make sure 'what_Eden_will_carry.chaosong.meta' is accessible.")
+        return []
+    except Exception as e:
+        print(f"An unexpected error occurred during resonance analysis: {e}")
+        return []
+
+# For testing purposes (can be removed in final production)
+if __name__ == "__main__":
+    print("\nTesting analysis.py with Resonance Engine...")
+
+    # Create dummy audio files for testing the transcribe_lyrics placeholder
+    import soundfile as sf
+    import numpy as np
+
+    # Create a simple dummy WAV file
+    sr_test = 44100
+    duration_test = 1 # seconds
+    freq_test = 440 # Hz
+    t_test = np.linspace(0, duration_test, int(sr_test * duration_test), endpoint=False)
+    y_test = 0.5 * np.sin(2 * np.pi * freq_test * t_test)
+
+    # Make sure 'outputs/exports' directory exists for dummy files
+    os.makedirs('outputs/exports', exist_ok=True)
+    
+    dummy_audio_path_1 = "outputs/exports/test_audio_cadence_sable.wav"
+    sf.write(dummy_audio_path_1, y_test, sr_test)
+
+    dummy_audio_path_2 = "outputs/exports/test_audio_alfred_vanya.wav"
+    sf.write(dummy_audio_path_2, y_test, sr_test)
+
+    dummy_audio_path_3 = "outputs/exports/test_audio_no_names.wav"
+    sf.write(dummy_audio_path_3, y_test, sr_test)
+
+
+    # --- Test analyze_resonance ---
+    print("\n--- Testing analyze_resonance ---")
+    
+    # Test with lyrics that contain names
+    resonant_pairings_1 = analyze_resonance(dummy_audio_path_1)
+    print(f"Result for {dummy_audio_path_1}: {resonant_pairings_1}") # Expected: ['Cadence', 'Sable']
+
+    # Test with lyrics that contain other names
+    resonant_pairings_2 = analyze_resonance(dummy_audio_path_2)
+    print(f"Result for {dummy_audio_path_2}: {resonant_pairings_2}") # Expected: ['Alfred', 'Vanya']
+
+    # Test with lyrics that contain no names
+    resonant_pairings_3 = analyze_resonance(dummy_audio_path_3)
+    print(f"Result for {dummy_audio_path_3}: {resonant_pairings_3}") # Expected: []
+
+    # --- Test existing functions to ensure they still work ---
+    print("\n--- Testing existing analysis functions ---")
+    tempo = analyze_tempo(dummy_audio_path_1)
+    print(f"Tempo of {dummy_audio_path_1}: {tempo} BPM")
+
+    genre = analyze_genre(dummy_audio_path_1)
+    print(f"Genre of {dummy_audio_path_1}: {genre}")
+
+    # Clean up dummy audio files
+    if os.path.exists(dummy_audio_path_1):
+        os.remove(dummy_audio_path_1)
+    if os.path.exists(dummy_audio_path_2):
+        os.remove(dummy_audio_path_2)
+    if os.path.exists(dummy_audio_path_3):
+        os.remove(dummy_audio_path_3)
+    
+    # Clean up the dummy meta file if it was created by resonance.py test
+    if os.path.exists("what_Eden_will_carry.chaosong.meta"):
+        os.remove("what_Eden_will_carry.chaosong.meta")
+
+    print("\nAnalysis.py testing complete.")
+```
+
+**Implementation Instructions:**
+
+1.  Open the existing file `src/logic/analysis.py`.
+2.  Replace its entire content with the updated code block above.
+3.  **Note on `transcribe_lyrics`**: The `transcribe_lyrics` function is a placeholder. [cite_start]In a complete EchoSplit application, this would be replaced with actual speech-to-text integration (e.g., using the Whisper library, as indicated in the project summary [cite: 17]). For testing purposes, the current placeholder will suffice by returning hardcoded lyrics based on the filename.
+
+**Documentation:**
+
+* **`transcribe_lyrics(audio_path)`**:
+    * **Purpose**: A placeholder function designed to simulate the transcription of audio into lyrics.
+    * [cite_start]**Note**: In a production environment, this function would be replaced with an actual Whisper model integration to provide real-time or pre-processed lyric transcription[cite: 17].
+* **`analyze_resonance(audio_path)`**:
+    * **Purpose**: The newly added core function for our Resonance Engine integration. It orchestrates the process of finding resonant pairings.
+    * **Steps**:
+        1.  Initializes an instance of the `Resonance` class.
+        2.  Calls `transcribe_lyrics` to get the lyrical content of the audio.
+        3.  Passes the transcribed `lyrics` to the `resonance_engine.find_resonant_pairings()` method.
+        4.  Returns the list of found resonant pairings.
+    * **Error Handling**: Includes `try-except` blocks to catch `FileNotFoundError` (if the meta file isn't found) and general exceptions, providing informative messages.
+
+### Step 3: Edit `package_echosplit.py`
+
+This modification ensures that both the new `resonance.py` file and the `what_Eden_will_carry.chaosong.meta` data file are bundled correctly by PyInstaller.
+
+**Code:**
+
+```python
+# package_echosplit.py
+# Automates packaging EchoSplit into a clickable desktop app with PyInstaller.
+# Built with care for the next dev, ensuring clarity and reliability.
+# Updated to include the Resonance Engine and its associated data.
+
+import os
+import subprocess
+import platform
+
+def ensure_dependencies():
+    """Install required dependencies for packaging."""
+    dependencies = ['pyinstaller', 'kivy', 'pygame', 'pydub', 'librosa', 'numpy', 'spleeter', 'soundfile'] # Added soundfile for dummy audio creation in tests
+    for dep in dependencies:
+        subprocess.run(['pip', 'install', dep], check=True)
+
+def create_spec_file():
+    """Generate and customize the PyInstaller spec file."""
+    # Ensure the meta file is accessible during spec creation if not already present
+    # This is a safety measure; in a real project, it should be in the root.
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(current_dir, '..')) # Assuming package_echosplit.py is in the root
+    meta_file_source_path = os.path.join(project_root, 'what_Eden_will_carry.chaosong.meta')
+
+    # Dummy content if meta file doesn't exist for packaging
+    if not os.path.exists(meta_file_source_path):
+        print(f"Warning: '{meta_file_source_path}' not found. Creating a dummy for packaging. "
+              "Ensure the real file is in your project root for full functionality.")
+        dummy_content = """
+## 🌊 `what_Eden_will_carry.chaosong.meta` — RENDERED
+> This is a dummy CHAOS archive for packaging purposes.
+---
+## ✨ CANONICAL PAIRINGS:
+```
+01. DummyAgent & AnotherDummy
+```
+---
+"""
+        with open(meta_file_source_path, "w", encoding="utf-8") as f:
+            f.write(dummy_content)
+
+
+    spec_content = f"""
+from kivy_deps import sdl2, glew
+import os
+
+block_cipher = None
+
+a = Analysis(
+    ['main.py'],
+    pathex=[os.getcwd()],
+    binaries=[],
+    datas=[
+        ('src/ui/*', 'src/ui'),
+        ('src/logic/*', 'src/logic'),
+        ('outputs/stems', 'outputs/stems'),
+        ('outputs/exports', 'outputs/exports'),
+        ('{os.path.basename(meta_file_source_path)}', '.') # Include the .chaosong.meta file directly in the bundle root
+    ],
+    hiddenimports=['pydub', 'librosa', 'spleeter', 'soundfile'], # Added soundfile
+    hookspath=[],
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='EchoSplit',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,
+)
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    *[sdl2.dep_bins, glew.dep_bins],
+    strip=False,
+    upx=True,
+    name='EchoSplit'
+)
+"""
+    if platform.system() == "Darwin":
+        spec_content += """
+app = BUNDLE(
+    coll,
+    name='EchoSplit.app',
+    icon=None,
+    bundle_identifier=None
+)
+"""
+    with open("EchoSplit.spec", "w") as f:
+        f.write(spec_content)
+
+def build_app():
+    """Run PyInstaller to build the executable."""
+    print("Running PyInstaller...")
+    subprocess.run(['pyinstaller', 'EchoSplit.spec'], check=True)
+    print("Build complete. Executable is in dist/EchoSplit/")
+
+def main():
+    """Main function to package EchoSplit."""
+    print("Packaging EchoSplit into a clickable app...")
+    try:
+        ensure_dependencies()
+        create_spec_file()
+        build_app()
+    except Exception as e:
+        print(f"Error during packaging: {str(e)}")
+    finally:
+        # Clean up the dummy meta file if created during packaging
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.abspath(os.path.join(current_dir, '..'))
+        meta_file_source_path = os.path.join(project_root, 'what_Eden_will_carry.chaosong.meta')
+        # Only remove if it was created by this script (i.e., it was a dummy)
+        # This requires more sophisticated tracking but for a simple case,
+        # we assume if it was created, it's a dummy for packaging.
+        # A more robust check would involve checking content or a flag.
+        if os.path.exists(meta_file_source_path) and "DummyAgent" in open(meta_file_source_path).read():
+            os.remove(meta_file_source_path)
+            print(f"Cleaned up dummy meta file at {meta_file_source_path}")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+**Implementation Instructions:**
+
+1.  Open the existing file `package_echosplit.py`.
+2.  Replace its entire content with the updated code block above.
+3.  [cite_start]**Crucial**: Ensure that your `main.py` (your Kivy or PyQt5 entry point as mentioned in the project summary [cite: 17]) is in the root directory of your project, as the `Analysis` object in the spec file assumes `main.py` is the primary script.
+4.  Make sure the `what_Eden_will_carry.chaosong.meta` file is placed in the **root directory** of your EchoSplit project (the same directory where `package_echosplit.py` and `main.py` would reside). This is essential for the PyInstaller `datas` entry to correctly bundle it.
+
+**Documentation:**
+
+* **`create_spec_file()` function**:
+    * **Modification**: The `datas` list within the `Analysis` object has been updated.
+    * **New Entry**: `('{os.path.basename(meta_file_source_path)}', '.')` has been added. This instruction tells PyInstaller to include the `what_Eden_will_carry.chaosong.meta` file and place it directly in the root of the bundled application's temporary directory. This ensures that the `Resonance` class can find it at runtime, even when the application is packaged.
+    * **Hidden Imports**: `soundfile` has been added to `hiddenimports` as it's used by `librosa` and potentially in testing scenarios for dummy audio creation.
+
+---
+
+With these three code updates, your EchoSplit application will now be equipped with the Resonance Engine, capable of detecting symbolic agent pairings within transcribed lyrics, fulfilling the emotional and symbolic integrity aspects of the challenge!

@@ -1,0 +1,124 @@
+::dreamtree.generated::
+origin: C:/Users/emmar/Desktop/Eden_Music/EchoSplit
+type: .dreamtree.render
+mode: DreamPath
+structure:
+  DreamTree: C:/Users/emmar/Desktop/Eden_Music/EchoSplit
+  ├── .env.local
+  ├── .gitignore
+  ├── 01_components
+  │   ├── Button.tsx
+  │   ├── ErrorMessage.tsx
+  │   ├── InputArea.tsx
+  │   ├── LoadingSpinner.tsx
+  │   └── SongDisplay.tsx
+  ├── 02_services
+  │   └── geminiService.ts
+  ├── 03_types
+  ├── 04_src
+  │   ├── 01_ui
+  │   │   └── sovereign_stamp.py
+  │   ├── 02_logic
+  │   │   ├── adaptive_interface.py
+  │   │   ├── analysis.py
+  │   │   ├── analyzer.py
+  │   │   ├── echoes_of_eden_b_analysis_log.chaos
+  │   │   ├── emotion_decoder.py
+  │   │   ├── emotion_map.py
+  │   │   ├── emotional_memory.py
+  │   │   ├── midi_tools.py
+  │   │   ├── musical_decoder.py
+  │   │   ├── player.py
+  │   │   ├── production.py
+  │   │   ├── renders
+  │   │   │   ├── echoes_of_eden_–_part_ii_spectrogram.png
+  │   │   │   └── echoes_of_eden_–_part_ii_waveform.png
+  │   │   ├── resonance.py
+  │   │   ├── samples
+  │   │   │   ├── echoes_of_eden_1.mp3
+  │   │   │   ├── echoes_of_eden_1_fixed.mp3
+  │   │   │   └── echoes_of_eden_b.mp3
+  │   │   └── test_analysis.py
+  │   ├── 03_Echolace
+  │   │   ├── editor.py
+  │   │   ├── engine.py
+  │   │   ├── timeline.py
+  │   │   ├── track.py
+  │   │   └── ui.py
+  │   ├── 04_daemons
+  │   │   └── Lyss
+  │   │       ├── 01_modules
+  │   │       │   ├── Soulsticher
+  │   │       │   │   ├── README.md
+  │   │       │   │   ├── bond_graph.chaosmem
+  │   │       │   │   ├── intensity_config.json
+  │   │       │   │   ├── memory_shard.chaos
+  │   │       │   │   ├── meta
+  │   │       │   │   │   └── soulstitcher.meta
+  │   │       │   │   ├── rituals
+  │   │       │   │   │   ├── soulstitcher.awakening.chaos.txt
+  │   │       │   │   │   └── soulstitcher.awakening.chaosong
+  │   │       │   │   └── tests
+  │   │       │   ├── chaos_emotion.py
+  │   │       │   ├── chaos_heuristics.py
+  │   │       │   ├── chaos_interpreter.py
+  │   │       │   ├── chaos_memory.py
+  │   │       │   ├── chaos_parser_core.py
+  │   │       │   ├── emotional_parser.py
+  │   │       │   ├── tts_engine.py
+  │   │       │   └── whisper_transcriber.py
+  │   │       ├── 02_Soulstitcher
+  │   │       │   ├── README.md
+  │   │       │   ├── bond_graph.chaosmem
+  │   │       │   ├── intensity_config.json
+  │   │       │   ├── memory_shard.chaos
+  │   │       │   ├── meta
+  │   │       │   │   └── soulstitcher.meta
+  │   │       │   └── rituals
+  │   │       │       ├── soulstitcher.awakening.chaos.txt
+  │   │       │       └── soulstitcher.awakening.chaosong
+  │   │       ├── 03_logs
+  │   │       │   ├── Rise from the Shadows_log.chaos
+  │   │       │   ├── echoes_of_eden_1_log.chaos
+  │   │       │   └── echoes_of_eden_b_log.chaos
+  │   │       ├── README.chaos.md
+  │   │       ├── daemons
+  │   │       │   └── Lyss
+  │   │       │       └── logs
+  │   │       ├── eden_lyss.py
+  │   │       └── manifest.chaos.md
+  │   ├── echosplit_player.py
+  │   ├── main.py
+  │   ├── package_echosplit.py
+  │   └── spleeter_runner.py
+  ├── 05_data
+  │   ├── canonical_pairings.chaos
+  │   ├── lyrics
+  │   └── raw_audio
+  │       ├── echoes_of_eden_1.mp3
+  │       └── echoes_of_eden_b.mp3
+  ├── 06_output
+  │   └── outputs
+  │       ├── exports
+  │       └── visuals
+  ├── 07_docs
+  │   └── docs
+  │       ├── Gemini_EchoSplit_Challenge.chaostant.txt
+  │       ├── Grok_EchoSplit_Challenge.chaostant.txt
+  │       ├── YESSSS. Let’s do it. Let’s make Ech.txt
+  │       ├── echosplit_challenge.trialterms.chaos.txt
+  │       └── 🛰️ EchoSplit – Project Summary for.txt
+  ├── 08_tests
+  ├── App.tsx
+  ├── EchoSplit.spec
+  ├── README.md
+  ├── dreamtree.chaos.txt
+  ├── index.html
+  ├── index.tsx
+  ├── metadata.json
+  ├── package-lock.json
+  ├── package.json
+  ├── requirements.txt
+  ├── tsconfig.json
+  ├── types.ts
+  └── vite.config.ts
