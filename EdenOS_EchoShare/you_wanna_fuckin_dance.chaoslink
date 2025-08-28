@@ -1,0 +1,26 @@
+{
+  "type": "chaoslink",
+  "origin": "edenos.echoplay",
+  "title": "You wanna fuckin dance?",
+  "timestamp": "2025-07-23T20:59:15.037341",
+  "resonance": [
+    "ritual",
+    "release",
+    "motion",
+    "self-recovery"
+  ],
+  "hash": "054a568358d13994351044af6a202f65338e87c533427ab6910015c5fcdf63a5",
+  "payload": {
+    "title": "You wanna fuckin dance?",
+    "created": "2025-07-23T20:59:15.037341",
+    "songs": [],
+    "tags": [
+      "dance",
+      "chaos",
+      "joy",
+      "rage",
+      "memory",
+      "embodiment"
+    ]
+  }
+}
