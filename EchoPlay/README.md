@@ -80,31 +80,7 @@ Use **Load Playlist** to pick audio files and control playback with **Play**, **
 
 ---
 
-### ⚙ Installation & Usage
 
-> EchoPlay is very early. The following steps run a small OAuth demo while the main player is built.
-
-#### Dependencies
-
-- Python 3.11+
-- `pygame`
-- `pydub`
-- `google-auth-oauthlib`
-
-#### Steps
-
-1. Install Python 3.
-2. Install packages:
-   ```bash
-   pip install pygame pydub google-auth-oauthlib
-   ```
-3. Place your Google OAuth client secret in `secrets/`.
-4. Run the demo:
-   ```bash
-   python youtube/youtube_oauth_desktop.py
-   ```
-
-Running the script opens a browser window for authentication and prints a token.
 
 ---
 
