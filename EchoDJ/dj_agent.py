@@ -34,7 +34,7 @@ def build_yt_dlp_search_command(query: str) -> list[str]:
 
 
 class AIDJApp:
-    """Tiny Tk based interface for searching and downloading music."""
+    """Tiny Tk-based interface for searching and downloading music."""
 
     def __init__(self, master: tk.Misc) -> None:
         self.master = master
