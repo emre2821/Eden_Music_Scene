@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EmotionTag",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string", "description": "Unique identifier for the tag"},
+    "track_id": {"type": "string", "description": "Identifier of the associated track"},
+    "user_id": {"type": "string", "description": "Identifier of the user who created the tag"},
+    "emotion": {"type": "string", "description": "Primary emotion name"},
+    "intensity": {"type": "number", "minimum": 0, "maximum": 1, "description": "Strength of emotion from 0 to 1"},
+    "notes": {"type": "string", "description": "Optional free-form notes"}
+  },
+  "required": ["track_id", "emotion"],
+  "additionalProperties": false
+}
