@@ -5,7 +5,9 @@ import { SongData, GeminiSongResponse, ChordProgression, SongLine } from '../typ
 const API_KEY = process.env.API_KEY;
 
 if (!API_KEY) {
-  console.warn("API_KEY is not set. AI features will not work.");
+  console.warn(
+    "⚠️ Missing API_KEY environment variable. Set it to your Google Gemini API key to enable AI features."
+  );
 }
 
 const ai = new GoogleGenAI({ apiKey: API_KEY || "fallback_or_error_key" });
@@ -89,7 +91,9 @@ const isValidSongData = (data: any): data is SongData => {
 
 export const generateSong = async (description: string, genre?: string, mood?: string, instruments?: string): Promise<SongData> => {
   if (!API_KEY) {
-    throw new Error("API Key for Gemini is not configured. Please set the API_KEY environment variable.");
+    throw new Error(
+      "Google Gemini API key not found. Set the API_KEY environment variable to use song generation."
+    );
   }
   
   const prompt = constructPrompt(description, genre, mood, instruments);
