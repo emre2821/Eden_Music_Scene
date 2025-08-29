@@ -47,7 +47,7 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ### 🚧 Roadmap (in development)
 
-- [ ] Basic GUI music player (play/pause/next/prev, file loader)
+- [x] Basic GUI music player (play/pause/next, playlist loader)
 - [ ] Emotional tagging (GUI-based, symbolic tags)
 - [ ] Agent comment system
 - [ ] Listening history + reflection logs
@@ -55,6 +55,18 @@ Each one stands alone. Together, they reshape what music *feels* like.
 - [ ] Symbolic filters: genre, emotion, purpose
 - [ ] Custom playlist builder w/ Eden aesthetic
 - [ ] “Resonance mode” (mood-aligned auto-plays)
+
+---
+
+### 🚀 Getting Started
+
+Run the minimal player and load a few tracks:
+
+```bash
+python player.py
+```
+
+Use **Load Playlist** to pick audio files and control playback with **Play**, **Pause**, and **Next**. The current song appears under *Now Playing*.
 
 ---
 
