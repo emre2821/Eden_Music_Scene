@@ -68,6 +68,23 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ---
 
+### 🔐 OAuth Setup
+
+EchoPlay calls the YouTube API. To keep credentials safe:
+
+1. Create a Google OAuth client and download the `client_secret` JSON.
+2. Store the file **outside** of the repo.
+3. Point the app to it by setting an environment variable:
+
+```bash
+# .env or shell
+ECHO_PLAY_CLIENT_SECRET_FILE=/absolute/path/to/client_secret.json
+```
+
+Run `youtube_oauth_desktop.py` after exporting the variable to generate a reusable `youtube_token.json`.
+
+---
+
 ### 🌀 Philosophy
 
 Eden doesn’t just want to *compete* with the music industry.  
