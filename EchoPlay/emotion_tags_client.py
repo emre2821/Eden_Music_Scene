@@ -25,6 +25,11 @@ def create_tag(tag: dict):
     ----------
     tag: dict
         Dictionary matching the emotion_tag_schema.json structure.
+
+    Returns
+    -------
+    dict
+        The created emotion tag as returned by the service.
     """
     data = json.dumps(tag).encode("utf-8")
     req = request.Request(
