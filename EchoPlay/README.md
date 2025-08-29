@@ -66,6 +66,29 @@ Each one stands alone. Together, they reshape what music *feels* like.
 - Emotional logic: `EdenOS Agent layer` (Melody, DJ Voltage, etc.)
 - Optional: `FastAPI` or `Flask` backend for stream+upload API
 
+### 🔑 YouTube OAuth Setup
+
+To let EchoPlay talk to YouTube on your behalf, you need a Google client secret JSON.
+
+1. [Create a project in Google Cloud Console](https://console.cloud.google.com/) and download the OAuth 2.0 **Desktop** client secret file.
+2. Point EchoPlay to that file via an environment variable:
+
+   - **Using a `.env` file** (recommended):
+
+     ```bash
+     YOUTUBE_CLIENT_SECRET_FILE=/full/path/to/client_secret.json
+     ```
+
+   - **Using an OS variable**:
+
+     ```bash
+     export YOUTUBE_CLIENT_SECRET_FILE=/full/path/to/client_secret.json
+     ```
+
+3. Run `python EchoPlay/youtube/youtube_oauth_desktop.py` and follow the browser prompt. A reusable `youtube_token.json` will be created.
+
+The `EchoPlay/secrets/` folder is ignored by git, so feel free to store your JSON there or any other safe location.
+
 ---
 
 ### 🌀 Philosophy

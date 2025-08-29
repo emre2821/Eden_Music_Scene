@@ -3,8 +3,16 @@ import json
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-# ✅ Full raw string path to your client_secret file
-CLIENT_SECRET_FILE = r'C:\Users\emmar\Desktop\Eden_Music\EchoPlay\secrets\client_secret_7610264765-0he942nuoiul0orkohed5bf774j5m3mr.apps.googleusercontent.com.json'  # <-- update this if needed
+try:
+    from dotenv import load_dotenv  # type: ignore
+    load_dotenv()
+except Exception:
+    pass
+
+# ✅ Path to your client_secret file via environment variable
+CLIENT_SECRET_FILE = os.getenv("YOUTUBE_CLIENT_SECRET_FILE")
+if not CLIENT_SECRET_FILE:
+    raise EnvironmentError("YOUTUBE_CLIENT_SECRET_FILE environment variable not set.")
 
 # 🔐 Scopes: grant permissions to manage your YouTube account
 SCOPES = [
@@ -28,3 +36,4 @@ youtube = build('youtube', 'v3', credentials=credentials)
 response = youtube.channels().list(part='snippet', mine=True).execute()
 channel_name = response['items'][0]['snippet']['title']
 print(f"\n✅ OAuth Success! You are logged in as: {channel_name}")
+
