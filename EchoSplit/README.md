@@ -39,3 +39,14 @@ npm run dev
 ```
 
 Open `http://localhost:5173` in your browser. Upload a track and experiment with AI-based stem splitting and remixing.
+
+### Command-line stem separation
+
+A lightweight CLI is available for running Spleeter locally. It accepts one
+or more input audio files and lets you choose the stem configuration:
+
+```bash
+python cli.py input.mp3 another.wav --stems 4 --output outputs/stems
+```
+
+`--stems` may be `2`, `4`, or `5`, matching Spleeter's available models.
