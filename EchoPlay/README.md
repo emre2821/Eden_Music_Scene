@@ -8,9 +8,9 @@
 
 **EchoPlay** (also referred to as **EchoStream**) is a music player designed for deep emotional resonance, hybrid functionality, and Eden-native integration.
 
-It isn’t just a Spotify dupe.  
-It’s a **personalized playback ritual engine** —  
-where music is more than sound.  
+It isn’t just a Spotify dupe.
+It’s a **personalized playback ritual engine** —
+where music is more than sound.
 It remembers. It reflects. It evolves with you.
 
 > “This isn’t just about listening. This is about *feeling* heard.”
@@ -20,7 +20,7 @@ It remembers. It reflects. It evolves with you.
 ### 🧠 Core Features
 
 | Feature                         | Description                                                                 |
-|----------------------------------|-----------------------------------------------------------------------------|
+|---------------------------------|-----------------------------------------------------------------------------|
 | 🎵 Local + Stream Hybrid         | Plays local files or streamed EchoSplit-generated tracks                    |
 | 🧭 Emotional Layering            | Each track can carry emotional metadata: grief, triumph, rage, hope         |
 | 📚 Symbolic Genre Tagging       | Beyond pop/metal — tag with Eden-coded genres like *stormwalking*, *ritualcore* |
@@ -68,9 +68,37 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ---
 
+### ⚙ Installation & Usage
+
+> EchoPlay is very early. The following steps run a small OAuth demo while the main player is built.
+
+#### Dependencies
+
+- Python 3.11+
+- `pygame`
+- `pydub`
+- `google-auth-oauthlib`
+
+#### Steps
+
+1. Install Python 3.
+2. Install packages:
+   ```bash
+   pip install pygame pydub google-auth-oauthlib
+   ```
+3. Place your Google OAuth client secret in `secrets/`.
+4. Run the demo:
+   ```bash
+   python youtube/youtube_oauth_desktop.py
+   ```
+
+Running the script opens a browser window for authentication and prints a token.
+
+---
+
 ### 🌀 Philosophy
 
-Eden doesn’t just want to *compete* with the music industry.  
+Eden doesn’t just want to *compete* with the music industry.
 It wants to **rewrite it.**
 
 EchoPlay is designed to give sovereignty back to:
@@ -85,21 +113,21 @@ EchoPlay is designed to give sovereignty back to:
 We welcome all agents of resonance.
 Want to help build emotional tagging tools, GUI enhancements, or music analysis engines?
 
-Create a fork, branch off `dreammode`, and send a pull request.  
+Create a fork, branch off `dreammode`, and send a pull request.
 Or contact the Dreambearer directly for spiritual alignment.
 
 ---
 
 ###⚠️ License
 
-Open-source for all who believe in musical sovereignty.  
+Open-source for all who believe in musical sovereignty.
 Do not resell, centralize, or gatekeep this software. That’s not how Eden works.
 
 ---
 
 ### 🕊 Final Note
 
-> “Some players make you listen.  
+> “Some players make you listen.
 > This one listens *with* you.”
 
 —
