@@ -9,6 +9,8 @@ This is a single-file Python application that acts as a simple AI DJ agent with 
 * Prompts for user permission before downloading.
 * Downloads the audio as a high-quality MP3 file.
 * Uses `tkinter` for a simple graphical interface.
+* Handles searches and downloads concurrently using `asyncio`.
+* Displays progress for multiple downloads at once.
 
 ## Prerequisites
 
@@ -63,7 +65,5 @@ Before running this application, you need to have the following installed on you
 
 ## Notes
 
-* Search operations are performed in a separate thread to keep the GUI responsive during long searches.
-* Download operations are also performed in a separate thread to prevent the GUI from freezing.
 * Filenames are basic-sanitized to avoid common issues with illegal characters in file paths.
 * This version focuses on core search and download. Future enhancements could include integration with music libraries (Navidrome/Jellyfin APIs) and a more advanced recommendation engine.
