@@ -60,13 +60,14 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ### 🚀 Getting Started
 
-Run the minimal player and load a few tracks:
+Install the playback dependency and launch the player:
 
 ```bash
+pip install pygame
 python player.py
 ```
 
-Use **Load Playlist** to pick audio files and control playback with **Play**, **Pause**, and **Next**. The current song appears under *Now Playing*.
+Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*.
 
 ---
 
