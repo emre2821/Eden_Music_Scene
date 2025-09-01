@@ -19,8 +19,22 @@ import asyncio
 import json
 import os
 import subprocess
+import shutil
 import tkinter as tk
 from tkinter import messagebox
+
+
+def check_dependencies() -> bool:
+    """Ensure ``yt-dlp`` and ``ffmpeg`` are available on the system."""
+
+    missing = [dep for dep in ("yt-dlp", "ffmpeg") if shutil.which(dep) is None]
+    if missing:
+        messagebox.showerror(
+            "Missing Dependencies",
+            f"Required tools not found: {', '.join(missing)}",
+        )
+        return False
+    return True
 
 
 def build_yt_dlp_search_command(query: str) -> list[str]:
@@ -38,6 +52,8 @@ class AIDJApp:
 
     def __init__(self, master: tk.Misc) -> None:
         self.master = master
+        if not check_dependencies():
+            raise RuntimeError("Missing required external tools.")
         master.title("AI DJ Agent")
 
         # --- Search widgets -------------------------------------------------
