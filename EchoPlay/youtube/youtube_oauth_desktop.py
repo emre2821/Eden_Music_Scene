@@ -6,8 +6,10 @@ from googleapiclient.discovery import build
 try:
     from dotenv import load_dotenv  # type: ignore
     load_dotenv()
-except Exception:
-    pass
+except ImportError as e:
+    print(f"Warning: python-dotenv not installed: {e}. Environment variables must be set manually.")
+except Exception as e:
+    print(f"Warning: Failed to load .env file: {e}")
 
 # ✅ Path to your client_secret file via environment variable
 CLIENT_SECRET_FILE = os.getenv("YOUTUBE_CLIENT_SECRET_FILE")
