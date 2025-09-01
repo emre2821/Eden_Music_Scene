@@ -18,7 +18,6 @@ from __future__ import annotations
 import asyncio
 import json
 import os
-import subprocess
 import tkinter as tk
 from tkinter import messagebox
 
@@ -53,7 +52,9 @@ class AIDJApp:
         self.search_button.pack(side=tk.LEFT, padx=5)
 
         # --- Results list ---------------------------------------------------
-        self.results_frame = tk.LabelFrame(master, text="Search Results", padx=10, pady=10)
+        self.results_frame = tk.LabelFrame(
+            master, text="Search Results", padx=10, pady=10
+        )
         self.results_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
         self.results_list = tk.Listbox(self.results_frame, height=10)
@@ -81,7 +82,9 @@ class AIDJApp:
         self.progress_list.pack(fill=tk.BOTH, expand=True)
 
         # --- Status bar -----------------------------------------------------
-        self.status_bar = tk.Label(master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status_bar = tk.Label(
+            master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W
+        )
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Prepare download directory
@@ -174,7 +177,9 @@ class AIDJApp:
         self.current_video_info = None
         self.download_button.config(state=tk.DISABLED)
         if self.current_results:
-            self.update_status(f"Found {len(self.current_results)} result(s). Select one to download.")
+            self.update_status(
+                f"Found {len(self.current_results)} result(s). Select one to download."
+            )
         else:
             self.update_status("No results found.")
 
@@ -204,7 +209,8 @@ class AIDJApp:
         uploader = self.current_video_info.get("uploader", "Unknown Artist")
 
         if not messagebox.askyesno(
-            "Download Confirmation", f"Do you want to download '{title}' by '{uploader}'?"
+            "Download Confirmation",
+            f"Do you want to download '{title}' by '{uploader}'?",
         ):
             return
 
@@ -218,4 +224,3 @@ class AIDJApp:
 
 
 __all__ = ["AIDJApp", "build_yt_dlp_search_command"]
-

@@ -2,7 +2,7 @@
 
 ## Development setup
 
-Install and configure the Git hooks:
+Install and configure the Git hooks with [pre-commit](https://pre-commit.com/):
 
 ```bash
 pip install pre-commit

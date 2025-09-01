@@ -1,10 +1,11 @@
 """Simple REST service for storing and retrieving emotion tags."""
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import uuid
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 TAGS: dict[str, dict] = {}
+
 
 class EmotionTagHandler(BaseHTTPRequestHandler):
     """HTTP handler that stores and retrieves emotion tags in memory."""
