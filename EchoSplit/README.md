@@ -50,3 +50,15 @@ python cli.py input.mp3 another.wav --stems 4 --output outputs/stems
 ```
 
 `--stems` may be `2`, `4`, or `5`, matching Spleeter's available models.
+
+### Demo player
+
+A small demo player is included for quick audio playback using `pygame`:
+
+```bash
+python 04_src/00_core/echosplit_player.py --audio-file path/to/song.mp3
+```
+
+Alternatively set the `ECHO_AUDIO_FILE` environment variable instead of using
+the flag. The script validates that the provided path exists before playback.
+
