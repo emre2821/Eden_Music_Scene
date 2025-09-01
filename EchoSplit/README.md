@@ -49,5 +49,3 @@ more input audio files and writes the separated stems to the specified folder:
 python cli.py input.mp3 another.wav --output outputs/stems
 ```
 
-Results are stored in `outputs/stems` by default and contain `vocals.wav` and
-`accompaniment.wav` for each input file.
