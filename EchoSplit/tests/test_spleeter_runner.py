@@ -1,35 +1,20 @@
-import importlib.util
-import sys
-import types
+
 from pathlib import Path
+import pytest
+
+spleeter = pytest.importorskip("spleeter")
+spleeter_runner = importlib.import_module("EchoSplit.04_src.00_core.spleeter_runner")
 
 
-def load_spleeter_runner(monkeypatch):
-    class DummySeparator:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def separate_to_file(self, input_path, output_dir):
-            Path(output_dir).mkdir(parents=True, exist_ok=True)
-            (Path(output_dir) / "vocals.wav").write_bytes(b"v")
-            (Path(output_dir) / "accompaniment.wav").write_bytes(b"a")
-
-    spleeter_pkg = types.SimpleNamespace(
-        separator=types.SimpleNamespace(Separator=DummySeparator)
-    )
-    monkeypatch.setitem(sys.modules, "spleeter", spleeter_pkg)
-    monkeypatch.setitem(sys.modules, "spleeter.separator", spleeter_pkg.separator)
-    module_path = Path(__file__).resolve().parents[1] / "04_src" / "00_core" / "spleeter_runner.py"
-    spec = importlib.util.spec_from_file_location("spleeter_runner", module_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+class DummySeparator:
+    def __init__(self, *args, **kwargs):
+        pass
 
 
 def test_separate_vocals(tmp_path, audio_clip_path, monkeypatch):
-    runner = load_spleeter_runner(monkeypatch)
+    monkeypatch.setattr(spleeter_runner, "Separator", DummySeparator)
     out_dir = tmp_path / "stems"
-    runner.separate_vocals(audio_clip_path, str(out_dir))
+    spleeter_runner.separate_vocals(audio_clip_path, str(out_dir))
     assert (out_dir / "vocals.wav").exists()
     assert (out_dir / "accompaniment.wav").exists()
 
