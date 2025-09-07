@@ -1,4 +1,4 @@
-import importlib
+import importlib.util
 import sys
 import types
 from pathlib import Path
@@ -19,10 +19,11 @@ def load_spleeter_runner(monkeypatch):
     )
     monkeypatch.setitem(sys.modules, "spleeter", spleeter_pkg)
     monkeypatch.setitem(sys.modules, "spleeter.separator", spleeter_pkg.separator)
-    sys.path.append(str(Path(__file__).resolve().parents[1] / "04_src" / "00_core"))
-    if "spleeter_runner" in sys.modules:
-        del sys.modules["spleeter_runner"]
-    return importlib.import_module("spleeter_runner")
+    module_path = Path(__file__).resolve().parents[1] / "04_src" / "00_core" / "spleeter_runner.py"
+    spec = importlib.util.spec_from_file_location("spleeter_runner", module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_separate_vocals(tmp_path, audio_clip_path, monkeypatch):
@@ -31,3 +32,4 @@ def test_separate_vocals(tmp_path, audio_clip_path, monkeypatch):
     runner.separate_vocals(audio_clip_path, str(out_dir))
     assert (out_dir / "vocals.wav").exists()
     assert (out_dir / "accompaniment.wav").exists()
+
