@@ -49,3 +49,18 @@ more input audio files and writes the separated stems to the specified folder:
 python cli.py input.mp3 another.wav --output outputs/stems
 ```
 
+### Demo scripts
+
+The `04_src` directory contains several small Python demos:
+
+- `04_src/00_core/echosplit_player.py` plays a single track. Supply the path
+  via `--audio-file` or the `ECHO_AUDIO_FILE` environment variable.
+- `04_src/00_core/spleeter_runner.py` wraps Spleeter. Provide an input file with
+  `--input`/`ECHO_INPUT` and choose an output folder with
+  `--output-dir`/`ECHO_OUTPUT_DIR`.
+- `04_src/02_logic/test_analysis.py` analyzes one or more tracks. Pass paths via
+  `--tracks` (or comma-separated `ECHO_TRACKS`) and set the render directory with
+  `--render-dir`/`ECHO_RENDER_DIR`.
+
+Each script validates that the supplied paths exist before processing.
+
