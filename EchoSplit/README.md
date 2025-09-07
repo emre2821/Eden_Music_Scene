@@ -43,9 +43,17 @@ Open `http://localhost:5173` in your browser. Upload a track and experiment with
 ### Command-line stem separation
 
 A lightweight CLI is available for running Spleeter locally. It accepts one or
-more input audio files and writes the separated stems to the specified folder:
+more input audio files and writes the separated stems to the desired folder.
+
+Separate a single track using the default output directory (`outputs/stems`):
 
 ```bash
-python cli.py input.mp3 another.wav --output outputs/stems
+python cli.py path/to/song.mp3
+```
+
+Provide multiple files and a custom destination:
+
+```bash
+python cli.py input.mp3 another.wav --output my_stems
 ```
 

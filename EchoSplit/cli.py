@@ -27,23 +27,29 @@ def _load_spleeter_runner():
 spleeter_runner = _load_spleeter_runner()
 
 
-def separate_files(files: Iterable[str], output_dir: Path) -> None:
+def separate_files(files: Iterable[Path], output_dir: Path) -> None:
     """Separate vocals from the given audio files."""
     output_dir.mkdir(parents=True, exist_ok=True)
     for input_path in files:
+        if not input_path.exists():
+            print(f"[warn] File not found: {input_path}")
+            continue
         try:
             spleeter_runner.separate_vocals(str(input_path), str(output_dir))
             print(f"Separated {input_path} -> {output_dir}")
         except FileNotFoundError:
+            # Underlying module can still raise if it performs its own check.
             print(f"[warn] File not found: {input_path}")
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="EchoSplit audio stem separation")
-    parser.add_argument("inputs", nargs="+", help="Input audio file(s)")
+    parser.add_argument("inputs", nargs="+", type=Path, help="Input audio file(s)")
     parser.add_argument(
+        "-o",
         "--output",
-        default=str(Path("outputs") / "stems"),
+        type=Path,
+        default=Path("outputs") / "stems",
         help="Directory to store separated stems (default: outputs/stems)",
     )
     return parser
@@ -52,7 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
-    separate_files(args.inputs, Path(args.output))
+    separate_files(args.inputs, args.output)
 
 
 if __name__ == "__main__":
