@@ -64,7 +64,7 @@ Install the playback dependency and launch the player:
 
 ```bash
 pip install pygame
-python player.py
+python -m EchoPlay.player
 ```
 
 Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*.

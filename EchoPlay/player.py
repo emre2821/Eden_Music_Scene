@@ -1,3 +1,5 @@
+"""Minimal Tkinter music player for local files."""
+
 import os
 import tkinter as tk
 from tkinter import filedialog
@@ -16,7 +18,7 @@ class EchoPlayer:
         self.current_track: str | None = None
         self.paused: bool = False
 
-        self.now_playing = tk.StringVar(value="No track loaded")
+        self.now_playing = tk.StringVar(value="Now Playing: none")
         tk.Label(self.root, textvariable=self.now_playing).pack(pady=10)
 
         controls = tk.Frame(self.root)
@@ -35,7 +37,7 @@ class EchoPlayer:
         if file:
             self.current_track = file
             self.paused = False
-            self.now_playing.set(f"Selected: {os.path.basename(file)}")
+            self.now_playing.set(f"Ready: {os.path.basename(file)}")
 
     def play(self) -> None:
         """Play or resume the selected track."""
@@ -47,7 +49,9 @@ class EchoPlayer:
         else:
             pygame.mixer.music.load(self.current_track)
             pygame.mixer.music.play()
-        self.now_playing.set(f"Playing: {os.path.basename(self.current_track)}")
+        self.now_playing.set(
+            f"Now Playing: {os.path.basename(self.current_track)}"
+        )
 
     def pause(self) -> None:
         """Pause playback."""
@@ -55,16 +59,15 @@ class EchoPlayer:
             pygame.mixer.music.pause()
             self.paused = True
             if self.current_track:
-                self.now_playing.set(f"Paused: {os.path.basename(self.current_track)}")
+                self.now_playing.set(
+                    f"Paused: {os.path.basename(self.current_track)}"
+                )
 
     def stop(self) -> None:
         """Stop playback."""
         pygame.mixer.music.stop()
         self.paused = False
-        if self.current_track:
-            self.now_playing.set(f"Stopped: {os.path.basename(self.current_track)}")
-        else:
-            self.now_playing.set("No track loaded")
+        self.now_playing.set("Now Playing: none")
 
     def run(self) -> None:
         self.root.mainloop()
