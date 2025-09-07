@@ -18,6 +18,8 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import shutil
+import subprocess
 import tkinter as tk
 from tkinter import messagebox
 
