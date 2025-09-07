@@ -18,6 +18,8 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import shutil
+import subprocess
 import tkinter as tk
 from tkinter import messagebox
 
@@ -110,7 +112,6 @@ class AIDJApp:
 
         # State
         self.current_results: list[dict] = []
-        self.current_video_info: dict | None = None
 
     # ------------------------------------------------------------------
     # Helper methods
@@ -177,8 +178,7 @@ class AIDJApp:
             if not line:
                 continue
             try:
-                info = json.loads(line)
-                self.current_results.append(info)
+                self.current_results.append(json.loads(line))
             except json.JSONDecodeError:  # pragma: no cover - defensive
                 continue
 
@@ -189,7 +189,6 @@ class AIDJApp:
             uploader = info.get("uploader", "Unknown Artist")
             self.results_list.insert(tk.END, f"{title} – {uploader}")
 
-        self.current_video_info = None
         self.download_button.config(state=tk.DISABLED)
         if self.current_results:
             self.update_status(
@@ -205,12 +204,9 @@ class AIDJApp:
 
         selection = self.results_list.curselection()
         if not selection:
-            self.current_video_info = None
             self.download_button.config(state=tk.DISABLED)
             return
 
-        index = selection[0]
-        self.current_video_info = self.current_results[index]
         self.download_button.config(state=tk.NORMAL)
 
     def prompt_download(self) -> None:
