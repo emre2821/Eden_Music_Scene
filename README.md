@@ -2,14 +2,15 @@
 
 ## Development setup
 
-Install and configure the Git hooks with [pre-commit](https://pre-commit.com/):
+After cloning the repository, install and configure the Git hooks with [pre-commit](https://pre-commit.com/):
 
 ```bash
 pip install pre-commit
 pre-commit install
 ```
 
-Run all checks:
+This enables `black`, `ruff`, and `prettier` to run automatically before each commit.
+You can also run all checks manually:
 
 ```bash
 pre-commit run --all-files
