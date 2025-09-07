@@ -34,10 +34,20 @@ def _get_client_secret_file() -> str:
 try:
     CLIENT_SECRET_FILE = _get_client_secret_file()
 except EnvironmentError:
-    print(
+    message = (
         "❌ Missing YOUTUBE_CLIENT_SECRET_FILE.\n"
         "Set the environment variable or add it to your .env file before running this script."
     )
+    try:
+        import tkinter as tk
+        from tkinter import messagebox
+
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("Missing YouTube Client Secret", message)
+        root.destroy()
+    except Exception:
+        print(message)
     sys.exit(1)
 
 
