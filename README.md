@@ -14,3 +14,12 @@ Run all checks:
 ```bash
 pre-commit run --all-files
 ```
+
+## Running tests
+
+Execute the test suites with:
+
+```bash
+pytest tests
+pytest EchoSplit/tests
+```

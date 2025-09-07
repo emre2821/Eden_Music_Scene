@@ -1,30 +1,22 @@
+import math
+import struct
+import wave
+
 import pytest
-import numpy as np
-import soundfile as sf
-import librosa
+
 
 @pytest.fixture
-def sine_audio_file(tmp_path):
-    sr = 22050
-    t = np.linspace(0, 1, sr, False)
-    y = 0.5 * np.sin(2 * np.pi * 440 * t)
-    file_path = tmp_path / "sine.wav"
-    sf.write(file_path, y, sr)
-    return str(file_path)
-
-@pytest.fixture
-def click_audio_file(tmp_path):
-    sr = 22050
-    y = librosa.clicks(times=np.arange(0, 1, 0.5), sr=sr, length=sr)
-    file_path = tmp_path / "click.wav"
-    sf.write(file_path, y, sr)
-    return str(file_path)
-
-@pytest.fixture
-def high_freq_audio_file(tmp_path):
-    sr = 22050
-    t = np.linspace(0, 1, sr, False)
-    y = 0.5 * np.sin(2 * np.pi * 4000 * t)
-    file_path = tmp_path / "high.wav"
-    sf.write(file_path, y, sr)
-    return str(file_path)
+def audio_clip_path(tmp_path):
+    """Generate a small sine-wave clip for audio tests and return its path."""
+    sample_rate = 8000
+    duration = 0.5  # seconds
+    frequency = 440.0
+    path = tmp_path / "test_clip.wav"
+    with wave.open(str(path), "w") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sample_rate)
+        for i in range(int(sample_rate * duration)):
+            value = int(32767.0 * math.sin(2 * math.pi * frequency * i / sample_rate))
+            wf.writeframes(struct.pack("<h", value))
+    return str(path)
