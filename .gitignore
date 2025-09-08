@@ -186,3 +186,4 @@ cython_debug/
 # Local OAuth secrets
 EchoPlay/secrets/
 youtube_token.json
+EchoSplit/tests/fixtures/

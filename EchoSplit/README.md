@@ -49,3 +49,13 @@ more input audio files and writes the separated stems to the specified folder:
 python cli.py input.mp3 another.wav --output outputs/stems
 ```
 
+
+## Testing
+
+Run the Python unit tests to verify the core logic modules:
+
+```bash
+pytest tests
+```
+
+Execute this from the `EchoSplit` directory or provide the full path `pytest EchoSplit/tests` from the repository root.
