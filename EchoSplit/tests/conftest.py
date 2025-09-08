@@ -17,4 +17,16 @@ def audio_clip_path(tmp_path):
         wf.setnchannels(1)
         wf.setsampwidth(2)
         wf.setframerate(sample_rate)
+        amplitude = 32767
+        frames = [
+            struct.pack(
+                "<h",
+                int(
+                    amplitude
+                    * math.sin(2 * math.pi * frequency * i / sample_rate)
+                ),
+            )
+            for i in range(num_frames)
+        ]
+        wf.writeframes(b"".join(frames))
     return str(path)
