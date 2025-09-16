@@ -187,5 +187,4 @@ cython_debug/
 EchoPlay/secrets/
 youtube_token.json
 
-# Test audio fixtures
 EchoSplit/tests/fixtures/
