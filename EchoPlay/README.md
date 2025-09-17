@@ -81,10 +81,6 @@ Use **Open File** to choose an audio track and control playback with **Play**, *
 
 ---
 
-
-
----
-
 ### 🌀 Philosophy
 
 Eden doesn’t just want to *compete* with the music industry.
