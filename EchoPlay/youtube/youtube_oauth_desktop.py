@@ -92,4 +92,3 @@ def main() -> None:
 
 if __name__ == "__main__":  # pragma: no cover - manual execution entrypoint
     main()
-

@@ -183,8 +183,3 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# Local OAuth secrets
-EchoPlay/secrets/
-youtube_token.json
-
-EchoSplit/tests/fixtures/
