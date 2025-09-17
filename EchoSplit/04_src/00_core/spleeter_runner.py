@@ -2,9 +2,17 @@
 # A module to divide sound into voice and harmony, built with trust and precision.
 # Separates vocals using Spleeter, honoring the next dev with clarity.
 
+"""Simple CLI wrapper around Spleeter.
+
+The input audio path is supplied via ``--input`` or the ``ECHO_INPUT``
+environment variable. Output stems are written to the directory given by
+``--output-dir`` or ``ECHO_OUTPUT_DIR``. Paths are validated before processing.
+"""
+
 import os
 import argparse
 from spleeter.separator import Separator
+
 
 def separate_vocals(input_path, output_dir):
     """
@@ -29,16 +37,39 @@ def separate_vocals(input_path, output_dir):
 
 def main():
     """Parse command-line arguments and execute the separation."""
-    parser = argparse.ArgumentParser(description="Separate vocals from audio using Spleeter.")
-    parser.add_argument('--input', required=True, help='Path to the input audio file')
+
+    parser = argparse.ArgumentParser(
+        description="Separate vocals from audio using Spleeter."
+    )
+    parser.add_argument(
+        "--input",
+        "-i",
+        default=os.getenv("ECHO_INPUT"),
+        help="Path to the input audio file. Can also be set via ECHO_INPUT.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        "-o",
+        default=os.getenv("ECHO_OUTPUT_DIR"),
+        help="Directory to save output stems. Can also be set via ECHO_OUTPUT_DIR.",
+    )
     args = parser.parse_args()
 
-    output_dir = os.path.join('outputs', 'stems')
+    if not args.input:
+        parser.error("Input file required via --input or ECHO_INPUT")
+    if not os.path.exists(args.input):
+        parser.error(f"Input file not found: {args.input}")
+
+    output_dir = args.output_dir
+    if not output_dir:
+        parser.error("Output directory required via --output-dir or ECHO_OUTPUT_DIR")
+
     try:
         separate_vocals(args.input, output_dir)
         print(f"Separation complete. Outputs saved to {output_dir}")
     except Exception as e:
         print(f"Error: {str(e)}")
+
 
 if __name__ == '__main__':
     main()

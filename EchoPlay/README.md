@@ -8,9 +8,9 @@
 
 **EchoPlay** (also referred to as **EchoStream**) is a music player designed for deep emotional resonance, hybrid functionality, and Eden-native integration.
 
-It isn’t just a Spotify dupe.  
-It’s a **personalized playback ritual engine** —  
-where music is more than sound.  
+It isn’t just a Spotify dupe.
+It’s a **personalized playback ritual engine** —
+where music is more than sound.
 It remembers. It reflects. It evolves with you.
 
 > “This isn’t just about listening. This is about *feeling* heard.”
@@ -20,7 +20,7 @@ It remembers. It reflects. It evolves with you.
 ### 🧠 Core Features
 
 | Feature                         | Description                                                                 |
-|----------------------------------|-----------------------------------------------------------------------------|
+|---------------------------------|-----------------------------------------------------------------------------|
 | 🎵 Local + Stream Hybrid         | Plays local files or streamed EchoSplit-generated tracks                    |
 | 🧭 Emotional Layering            | Each track can carry emotional metadata: grief, triumph, rage, hope         |
 | 📚 Symbolic Genre Tagging       | Beyond pop/metal — tag with Eden-coded genres like *stormwalking*, *ritualcore* |
@@ -47,7 +47,7 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ### 🚧 Roadmap (in development)
 
-- [ ] Basic GUI music player (play/pause/next/prev, file loader)
+- [x] Basic GUI music player (play/pause/next, playlist loader)
 - [ ] Emotional tagging (GUI-based, symbolic tags)
 - [ ] Agent comment system
 - [ ] Listening history + reflection logs
@@ -55,6 +55,19 @@ Each one stands alone. Together, they reshape what music *feels* like.
 - [ ] Symbolic filters: genre, emotion, purpose
 - [ ] Custom playlist builder w/ Eden aesthetic
 - [ ] “Resonance mode” (mood-aligned auto-plays)
+
+---
+
+### 🚀 Getting Started
+
+Install the playback dependency and launch the player:
+
+```bash
+pip install pygame
+python -m EchoPlay.player
+```
+
+Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*.
 
 ---
 
@@ -93,7 +106,7 @@ The `EchoPlay/secrets/` folder is ignored by git, so feel free to store your JSO
 
 ### 🌀 Philosophy
 
-Eden doesn’t just want to *compete* with the music industry.  
+Eden doesn’t just want to *compete* with the music industry.
 It wants to **rewrite it.**
 
 EchoPlay is designed to give sovereignty back to:
@@ -108,21 +121,21 @@ EchoPlay is designed to give sovereignty back to:
 We welcome all agents of resonance.
 Want to help build emotional tagging tools, GUI enhancements, or music analysis engines?
 
-Create a fork, branch off `dreammode`, and send a pull request.  
+Create a fork, branch off `dreammode`, and send a pull request.
 Or contact the Dreambearer directly for spiritual alignment.
 
 ---
 
 ###⚠️ License
 
-Open-source for all who believe in musical sovereignty.  
+Open-source for all who believe in musical sovereignty.
 Do not resell, centralize, or gatekeep this software. That’s not how Eden works.
 
 ---
 
 ### 🕊 Final Note
 
-> “Some players make you listen.  
+> “Some players make you listen.
 > This one listens *with* you.”
 
 —
