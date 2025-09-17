@@ -1,7 +1,15 @@
 # /src/logic/test_analysis.py
 
+"""Demo script for analyzing audio files with EchoSplit utilities.
+
+Tracks are supplied via the ``--tracks`` CLI flag or the ``ECHO_TRACKS``
+environment variable (comma-separated). Render output is written to the directory
+specified by ``--render-dir`` or ``ECHO_RENDER_DIR``.
+"""
+
 import os
 import json
+import argparse
 from datetime import datetime
 import matplotlib.pyplot as plt
 import librosa
@@ -9,15 +17,8 @@ import librosa.display
 
 from analyzer import generate_analysis_json
 
-TRACKS = [
-    ("samples/echoes_of_eden_1.mp3", "Echoes of Eden – Part I"),
-    ("samples/echoes_of_eden_b.mp3", "Echoes of Eden – Part II")
-]
-
 THREAD_TAG = "EchoesOfEdenMemory"
-RENDER_DIR = "renders"
-
-os.makedirs(RENDER_DIR, exist_ok=True)
+RENDER_DIR = os.getenv("ECHO_RENDER_DIR", "renders")
 
 def render_waveform(y, sr, label):
     plt.figure(figsize=(10, 4))
@@ -85,8 +86,38 @@ def test_file(path, label):
         print(f"❌ Error analyzing {label}: {e}")
 
 if __name__ == "__main__":
-    for filepath, title in TRACKS:
-        if not os.path.exists(filepath):
-            print(f"⚠️ File not found: {filepath}")
-        else:
-            test_file(filepath, title)
+    parser = argparse.ArgumentParser(
+        description="Analyze tempo, key, and emotions for one or more audio tracks"
+    )
+    parser.add_argument(
+        "--tracks",
+        "-t",
+        nargs="+",
+        help="Paths to audio files. Can also be set via ECHO_TRACKS (comma-separated).",
+    )
+    parser.add_argument(
+        "--render-dir",
+        default=os.getenv("ECHO_RENDER_DIR", "renders"),
+        help="Directory to store generated images (default: 'renders').",
+    )
+
+    args = parser.parse_args()
+
+    tracks = args.tracks
+    if not tracks:
+        env_tracks = os.getenv("ECHO_TRACKS", "")
+        tracks = [t for t in env_tracks.split(",") if t]
+
+    if not tracks:
+        parser.error("Provide at least one track via --tracks or ECHO_TRACKS")
+
+    global RENDER_DIR
+    RENDER_DIR = args.render_dir
+    os.makedirs(RENDER_DIR, exist_ok=True)
+
+    for path in tracks:
+        if not os.path.exists(path):
+            print(f"⚠️ File not found: {path}")
+            continue
+        title = os.path.splitext(os.path.basename(path))[0].replace("_", " ")
+        test_file(path, title)

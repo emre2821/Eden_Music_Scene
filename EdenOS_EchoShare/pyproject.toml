@@ -1,0 +1,8 @@
+[project]
+name = "EdenOS_EchoShare"
+version = "0.1.0"
+description = "Playlist sharing tools"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

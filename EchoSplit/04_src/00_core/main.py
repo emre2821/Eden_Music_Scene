@@ -2,7 +2,6 @@
 # EchoSplit execution entrypoint — designed from Grok's vision.
 # Orchestrates emotional decoding, resonance modeling, DAW editing, and CHAOS metadata output.
 
-import sys
 import os
 import json
 
@@ -79,12 +78,24 @@ def process_audio(audio_path: str, lyrics_path: str):
     print(f"✅ Full EchoSplit DAW+Emotional analysis complete: {output_path}")
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python main.py <audio_path> <lyrics_path>")
-        return
+    import argparse
 
-    audio_path = sys.argv[1]
-    lyrics_path = sys.argv[2]
+    parser = argparse.ArgumentParser(description="Run EchoSplit analysis")
+    parser.add_argument(
+        "--audio",
+        default=os.getenv("AUDIO_PATH"),
+        help="Path to the audio file. Can also be set via AUDIO_PATH environment variable.",
+    )
+    parser.add_argument("--lyrics", required=True, help="Path to the lyrics file.")
+
+    args = parser.parse_args()
+
+    audio_path = args.audio
+    if not audio_path:
+        parser.error("Audio path must be provided via --audio flag or AUDIO_PATH environment variable.")
+
+    lyrics_path = args.lyrics
+
     process_audio(audio_path, lyrics_path)
 
 if __name__ == "__main__":

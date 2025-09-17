@@ -47,7 +47,7 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ### 🚧 Roadmap (in development)
 
-- [ ] Basic GUI music player (play/pause/next/prev, file loader)
+- [x] Basic GUI music player (play/pause/next, playlist loader)
 - [ ] Emotional tagging (GUI-based, symbolic tags)
 - [ ] Agent comment system
 - [ ] Listening history + reflection logs
@@ -58,6 +58,19 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ---
 
+### 🚀 Getting Started
+
+Install the playback dependency and launch the player:
+
+```bash
+pip install pygame
+python -m EchoPlay.player
+```
+
+Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*.
+
+---
+
 ### 🛠 Technologies (Planned / In-Use)
 
 - `Python 3.11+`
@@ -65,34 +78,6 @@ Each one stands alone. Together, they reshape what music *feels* like.
 - Playback: `pygame`, `pydub`, or `vlc` backend
 - Emotional logic: `EdenOS Agent layer` (Melody, DJ Voltage, etc.)
 - Optional: `FastAPI` or `Flask` backend for stream+upload API
-
----
-
-### ⚙ Installation & Usage
-
-> EchoPlay is very early. The following steps run a small OAuth demo while the main player is built.
-
-#### Dependencies
-
-- Python 3.11+
-- `pygame`
-- `pydub`
-- `google-auth-oauthlib`
-
-#### Steps
-
-1. Install Python 3.
-2. Install packages:
-   ```bash
-   pip install pygame pydub google-auth-oauthlib
-   ```
-3. Place your Google OAuth client secret in `secrets/`.
-4. Run the demo:
-   ```bash
-   python youtube/youtube_oauth_desktop.py
-   ```
-
-Running the script opens a browser window for authentication and prints a token.
 
 ---
 

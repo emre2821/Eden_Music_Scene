@@ -1,0 +1,8 @@
+[project]
+name = "EchoDJ"
+version = "0.1.0"
+description = "DJ agent utilities"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
