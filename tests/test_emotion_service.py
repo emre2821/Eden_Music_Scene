@@ -12,13 +12,28 @@ from typing import Generator
 import pytest
 
 import emotion_service
+from emotion_storage import DatabaseTagStore
+
+
+@pytest.fixture
+def store(tmp_path) -> Generator[DatabaseTagStore, None, None]:
+    database_url = f"sqlite:///{tmp_path/'tags.db'}"
+    tag_store = DatabaseTagStore(database_url=database_url)
+    emotion_service.configure_store(tag_store)
+    tag_store.clear()
+    try:
+        yield tag_store
+    finally:
+        tag_store.clear()
+        tag_store.close()
 
 
 @contextmanager
-def running_service() -> Generator[tuple[str, int], None, None]:
+def running_service(store: DatabaseTagStore) -> Generator[tuple[str, int], None, None]:
     """Run the HTTP server in a background thread for the duration of a test."""
 
-    emotion_service.TAGS.clear()
+    emotion_service.configure_store(store)
+    store.clear()
     server = HTTPServer(("127.0.0.1", 0), emotion_service.EmotionTagHandler)
     host, port = server.server_address
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -28,7 +43,7 @@ def running_service() -> Generator[tuple[str, int], None, None]:
     finally:
         server.shutdown()
         thread.join(timeout=3)
-        emotion_service.TAGS.clear()
+        store.clear()
 
 
 def _request(host: str, port: int, method: str, path: str, body: object | None = None) -> tuple[int, dict]:
@@ -50,15 +65,15 @@ def _request(host: str, port: int, method: str, path: str, body: object | None =
     return response.status, parsed
 
 
-def test_get_tags_initially_empty() -> None:
-    with running_service() as (host, port):
+def test_get_tags_initially_empty(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         status, payload = _request(host, port, "GET", "/tags")
         assert status == 200
         assert payload == []
 
 
-def test_rejects_invalid_json() -> None:
-    with running_service() as (host, port):
+def test_rejects_invalid_json(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         conn = http.client.HTTPConnection(host, port, timeout=5)
         conn.request("POST", "/tags", body=b"{" , headers={"Content-Type": "application/json"})
         response = conn.getresponse()
@@ -79,15 +94,15 @@ def test_rejects_invalid_json() -> None:
         ({"track_id": "abc", "emotion": "joy", "intensity": "high"}, "intensity must be a number"),
     ],
 )
-def test_rejects_invalid_payloads(payload: dict, expected_message: str) -> None:
-    with running_service() as (host, port):
+def test_rejects_invalid_payloads(payload: dict, expected_message: str, store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         status, body = _request(host, port, "POST", "/tags", body=payload)
         assert status == 400
         assert expected_message in body["error"]
 
 
-def test_creates_and_retrieves_tag() -> None:
-    with running_service() as (host, port):
+def test_creates_and_retrieves_tag(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         payload = {
             "track_id": "eden-001",
             "emotion": "serenity",
@@ -108,8 +123,8 @@ def test_creates_and_retrieves_tag() -> None:
         assert retrieved == body
 
 
-def test_reuses_provided_identifier() -> None:
-    with running_service() as (host, port):
+def test_reuses_provided_identifier(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         payload = {
             "id": "custom-id",
             "track_id": "eden-777",
@@ -120,8 +135,8 @@ def test_reuses_provided_identifier() -> None:
         assert body["id"] == "custom-id"
 
 
-def test_accepts_optional_metadata_fields() -> None:
-    with running_service() as (host, port):
+def test_accepts_optional_metadata_fields(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         payload = {
             "track_id": "   eden-002   ",
             "emotion": " wonder ",
@@ -136,8 +151,8 @@ def test_accepts_optional_metadata_fields() -> None:
         assert body["notes"] == "whispered through static"
 
 
-def test_unknown_endpoint_returns_404() -> None:
-    with running_service() as (host, port):
+def test_unknown_endpoint_returns_404(store: DatabaseTagStore) -> None:
+    with running_service(store) as (host, port):
         status, body = _request(host, port, "GET", "/unknown")
         assert status == 404
         assert "unknown endpoint" in body["error"]

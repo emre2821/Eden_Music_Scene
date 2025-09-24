@@ -3,13 +3,33 @@
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
+from emotion_storage import DatabaseTagStore
+
 
 ALLOWED_FIELDS = {"id", "track_id", "user_id", "emotion", "intensity", "notes"}
-TAGS: Dict[str, Dict[str, Any]] = {}
+_STORE: DatabaseTagStore | None = None
+
+
+def _get_store() -> DatabaseTagStore:
+    """Lazily construct or return the configured tag store."""
+
+    global _STORE
+    if _STORE is None:
+        database_url = os.getenv("EMOTION_DB_URL")
+        _STORE = DatabaseTagStore(database_url=database_url)
+    return _STORE
+
+
+def configure_store(store: DatabaseTagStore) -> None:
+    """Inject a custom store implementation (used primarily in tests)."""
+
+    global _STORE
+    _STORE = store
 
 
 def _validate_tag_payload(tag: Any) -> Dict[str, Any]:
@@ -58,7 +78,7 @@ def _validate_tag_payload(tag: Any) -> Dict[str, Any]:
 
 
 class EmotionTagHandler(BaseHTTPRequestHandler):
-    """HTTP handler that stores and retrieves emotion tags in memory."""
+    """HTTP handler that stores and retrieves emotion tags in persistent storage."""
 
     def _send_json(self, data, status: int = 200) -> None:
         self.send_response(status)
@@ -68,10 +88,11 @@ class EmotionTagHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # pragma: no cover - simple IO
         if self.path == "/tags":
-            self._send_json(list(TAGS.values()))
+            tags = _get_store().list_tags()
+            self._send_json(tags)
         elif self.path.startswith("/tags/"):
             tag_id = self.path.split("/")[-1]
-            tag = TAGS.get(tag_id)
+            tag = _get_store().get_tag(tag_id)
             if tag:
                 self._send_json(tag)
             else:
@@ -99,8 +120,8 @@ class EmotionTagHandler(BaseHTTPRequestHandler):
 
         tag_id = tag.get("id") or str(uuid.uuid4())
         tag["id"] = tag_id
-        TAGS[tag_id] = dict(tag)
-        self._send_json(tag, status=201)
+        stored = _get_store().upsert_tag(dict(tag))
+        self._send_json(stored, status=201)
 
 
 def run(host: str = "127.0.0.1", port: int = 8000) -> None:
