@@ -68,7 +68,7 @@ def _validate_tag_payload(tag: Any) -> Dict[str, Any]:
 
     if "intensity" in tag:
         intensity = tag["intensity"]
-        if not isinstance(intensity, (int, float)):
+        if isinstance(intensity, bool) or not isinstance(intensity, (int, float)):
             raise ValueError("intensity must be a number between 0 and 1")
         if not 0 <= float(intensity) <= 1:
             raise ValueError("intensity must be between 0 and 1")
