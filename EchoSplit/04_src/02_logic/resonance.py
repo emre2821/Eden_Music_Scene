@@ -36,8 +36,11 @@ class Resonance:
             for emotion, data in detected.items():
                 if not isinstance(data, dict):
                     continue
+
+                confidence = self._normalise_confidence(data)
+
                 if emotion in lowered:
-                    match_score += data.get("confidence", 0.1)
+                    match_score += confidence
                 # bonus for matching dominant emotion
                 if emotion == dominant and emotion in lowered:
                     match_score += 0.2
@@ -46,3 +49,16 @@ class Resonance:
                 resonance_scores[pair] = round(match_score, 2)
 
         return dict(sorted(resonance_scores.items(), key=lambda x: x[1], reverse=True))
+
+    @staticmethod
+    def _normalise_confidence(emotion_data: Dict) -> float:
+        """Extract a usable confidence score from the metadata entry."""
+
+        if "confidence" not in emotion_data:
+            return 0.1
+
+        value = emotion_data.get("confidence")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return 0.0
+
+        return float(min(max(value, 0.0), 1.0))
