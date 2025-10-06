@@ -13,6 +13,7 @@ experiences inside Paradigm Eden.
 4. [Echo Suite front-ends](#echo-suite-front-ends)
 5. [Sound library curation](#sound-library-curation)
 6. [Release rituals](#release-rituals)
+7. [Capabilities overview](#capabilities-overview)
 
 ## Project map
 
@@ -122,3 +123,10 @@ these guidelines when extending the catalog:
 All packaging happens via `release.sh`, which now verifies tooling, clears stale
 builds, and runs `pytest` before uploading artifacts. See
 [`RELEASE.md`](RELEASE.md) for the full ceremonial checklist.
+
+## Capabilities overview
+
+New to the Eden Music Scene and want a quick sense of what each component can
+do? Consult [`docs/eden_music_scene_capabilities.md`](docs/eden_music_scene_capabilities.md)
+for a tour of the primary tools and how they interlock during creation,
+curation, and playback rituals.
