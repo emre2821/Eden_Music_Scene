@@ -92,6 +92,7 @@ def test_rejects_invalid_json(store: DatabaseTagStore) -> None:
         ({"track_id": "abc", "emotion": "joy", "extra": 1}, "unexpected field"),
         ({"track_id": "abc", "emotion": "joy", "intensity": 4}, "intensity must be between 0 and 1"),
         ({"track_id": "abc", "emotion": "joy", "intensity": "high"}, "intensity must be a number"),
+        ({"track_id": "abc", "emotion": "joy", "intensity": True}, "intensity must be a number"),
     ],
 )
 def test_rejects_invalid_payloads(payload: dict, expected_message: str, store: DatabaseTagStore) -> None:
