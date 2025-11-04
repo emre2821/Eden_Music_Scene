@@ -26,7 +26,8 @@ def _get_store() -> DatabaseTagStore:
         database_url = raw_url.strip() if raw_url is not None else None
         if raw_url is not None and not database_url:
             _LOGGER.warning(
-                "EMOTION_DB_URL is empty; defaulting to SQLite storage"
+                "EMOTION_DB_URL is empty (value: %r); defaulting to SQLite storage",
+                raw_url
             )
             database_url = None
         _STORE = DatabaseTagStore(database_url=database_url)
