@@ -5,6 +5,10 @@ base_dir = os.path.expanduser("~/EdenOS_Mobile/5_deployments/projects/EdenOS_Ech
 playlist_name = "you_wanna_fuckin_dance.m3u"
 playlist_path = os.path.join(base_dir, playlist_name)
 
+# Ensure the directory exists before writing the playlist
+os.makedirs(base_dir, exist_ok=True)
+print(f"📁 Ensured playlist directory exists at {base_dir}")
+
 # List of songs
 songs = [
     "Maniac – Michael Sembello",
@@ -46,11 +50,11 @@ songs = [
     "Move Your Feet – Junior Senior",
     "Can’t Get You Out of My Head – Kylie Minogue",
     "Get Up (I Feel Like Being a) Sex Machine – James Brown",
-    "Hand Jive – Grease Soundtrack"
+    "Hand Jive – Grease Soundtrack",
 ]
 
 # Write playlist
-with open(playlist_path, 'w') as file:
+with open(playlist_path, "w", encoding="utf-8") as file:
     file.write("#EXTM3U\n")
     for track in songs:
         file.write(f"#EXTINF:-1,{track}\n{track}\n")
