@@ -16,10 +16,16 @@ from urllib.parse import quote_plus
 try:
     from kivy.clock import Clock
     from kivymd.app import MDApp
+    from kivy.metrics import dp
+    from kivy.uix.scrollview import ScrollView
+    from kivymd.uix.boxlayout import MDBoxLayout
     from kivymd.uix.button import MDIconButton, MDRaisedButton
     from kivymd.uix.dialog import MDDialog
-    from kivymd.uix.list import ThreeLineListItem
+    from kivymd.uix.label import MDLabel
+    from kivymd.uix.list import MDList, ThreeLineListItem
     from kivymd.uix.screen import MDScreen
+    from kivymd.uix.spinner import MDSpinner
+    from kivymd.uix.textfield import MDTextField
 
     GUI_AVAILABLE = True
 except ImportError:
@@ -58,6 +64,83 @@ except ImportError:
         @staticmethod
         def schedule_once(*args, **kwargs):
             raise RuntimeError("GUI components are unavailable on this system.")
+    def dp(value):
+        return value
+
+    class _StubWidget:
+        def __init__(self, **kwargs):
+            self.children = []
+            self.opacity = kwargs.get("opacity", 1)
+            self.height = kwargs.get("height", 0)
+            self.size_hint = kwargs.get("size_hint", (1, 1))
+            self.size = kwargs.get("size", (0, 0))
+            self.spacing = kwargs.get("spacing", 0)
+            self.orientation = kwargs.get("orientation", "vertical")
+
+        def add_widget(self, widget):
+            self.children.append(widget)
+
+        def clear_widgets(self):
+            self.children.clear()
+
+    class MDApp:  # type: ignore[misc]
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class MDScreen(_StubWidget):
+        pass
+
+    class MDBoxLayout(_StubWidget):
+        pass
+
+    class ScrollView(_StubWidget):
+        pass
+
+    class MDList(_StubWidget):
+        pass
+
+    class MDIconButton(_StubWidget):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.icon = kwargs.get("icon", "")
+
+    class MDRaisedButton(_StubWidget):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.text = kwargs.get("text", "")
+
+        def on_release(self, *args, **kwargs):
+            if callback := kwargs.get("on_release"):
+                callback(None)
+
+    class MDDialog:
+        def __init__(self, **kwargs):
+            self.title = kwargs.get("title", "")
+            self.text = kwargs.get("text", "")
+            self.buttons = kwargs.get("buttons", [])
+
+        def open(self):
+            return None
+
+        def dismiss(self, *args, **kwargs):
+            return None
+
+    class MDSpinner(_StubWidget):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.active = kwargs.get("active", False)
+
+    class MDLabel(_StubWidget):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.text = kwargs.get("text", "")
+            self.halign = kwargs.get("halign", "left")
+            self.valign = kwargs.get("valign", "middle")
+
+    class MDTextField(_StubWidget):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.text = kwargs.get("text", "")
 
 # External features (optional)
 try:
@@ -103,7 +186,56 @@ class PlaylistApp(MDApp):
         self.current_playlist = []
         self.youtube_manager = YouTubePlaylistManager()
         self.ai_curator = AIPlaylistCurator()
-        return MDScreen()  # Placeholder: actual layout should be loaded here
+        screen = MDScreen()
+
+        root_layout = MDBoxLayout(
+            orientation="vertical",
+            padding=dp(16),
+            spacing=dp(16),
+            size_hint=(1, 1),
+        )
+
+        self.topic_input = MDTextField(
+            hint_text="Enter playlist topic or mood",
+            helper_text="Used for playlist generation",
+            helper_text_mode="on_focus",
+            size_hint=(1, None),
+            height=dp(56),
+        )
+        root_layout.add_widget(self.topic_input)
+
+        playlist_scroll = ScrollView(size_hint=(1, 1))
+        self.playlist_list = MDList()
+        playlist_scroll.add_widget(self.playlist_list)
+        root_layout.add_widget(playlist_scroll)
+
+        self.loading_container = MDBoxLayout(
+            orientation="horizontal",
+            spacing=dp(12),
+            size_hint=(1, None),
+            height=0,
+            opacity=0,
+        )
+        self.loading_spinner = MDSpinner(
+            size_hint=(None, None),
+            size=(dp(32), dp(32)),
+            active=False,
+        )
+        self.loading_label = MDLabel(
+            text="",
+            halign="left",
+            valign="middle",
+            size_hint=(1, None),
+            height=dp(32),
+        )
+        self.loading_container.add_widget(self.loading_spinner)
+        self.loading_container.add_widget(self.loading_label)
+        root_layout.add_widget(self.loading_container)
+
+        self._loading_height = dp(48)
+
+        screen.add_widget(root_layout)
+        return screen
 
     def _update_playlist_display(self):
         self.playlist_list.clear_widgets()
@@ -186,6 +318,21 @@ class PlaylistApp(MDApp):
             Clock.schedule_once(lambda dt: self.show_error(msg), 0)
         finally:
             Clock.schedule_once(lambda dt: self.hide_loading(), 0)
+
+    def show_loading(self, message: str = "Loading..."):
+        self.loading_label.text = message
+        self.loading_spinner.active = True
+        self.loading_container.opacity = 1
+        self.loading_container.height = getattr(
+            self, "_loading_height", self.loading_container.height
+        )
+
+    def hide_loading(self):
+        if hasattr(self, "loading_container"):
+            self.loading_spinner.active = False
+            self.loading_container.opacity = 0
+            self.loading_container.height = 0
+            self.loading_label.text = ""
 
     def clear_playlist(self, instance):
         self.current_playlist = []
