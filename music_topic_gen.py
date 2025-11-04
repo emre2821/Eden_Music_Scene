@@ -141,7 +141,9 @@ class MusicTopicGenerator:
         meaningful data.
         """
 
-        if count <= 0:
+        if count < 0:
+            raise ValueError("count must not be negative")
+        if count == 0:
             return []
 
         normalized = topic.lower()
