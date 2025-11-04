@@ -5,6 +5,7 @@ from __future__ import annotations
 import http.client
 import json
 import threading
+from pathlib import Path
 from contextlib import contextmanager
 from http.server import HTTPServer
 from typing import Generator
@@ -13,6 +14,24 @@ import pytest
 
 import emotion_service
 from emotion_storage import DatabaseTagStore
+
+
+def test_get_store_defaults_for_blank_env(monkeypatch, caplog):
+    monkeypatch.setenv("EMOTION_DB_URL", "")
+    monkeypatch.setattr(emotion_service, "_STORE", None)
+
+    with caplog.at_level("WARNING"):
+        store = emotion_service._get_store()
+
+    try:
+        assert "defaulting to SQLite storage" in caplog.text
+        assert str(store._engine.url) == "sqlite:///emotion_tags.db"
+    finally:
+        store.close()
+        emotion_service._STORE = None
+        default_db = Path("emotion_tags.db")
+        if default_db.exists():
+            default_db.unlink()
 
 
 @pytest.fixture
