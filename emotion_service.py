@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -13,6 +14,7 @@ from emotion_storage import DatabaseTagStore
 
 ALLOWED_FIELDS = {"id", "track_id", "user_id", "emotion", "intensity", "notes"}
 _STORE: DatabaseTagStore | None = None
+_LOGGER = logging.getLogger(__name__)
 
 
 def _get_store() -> DatabaseTagStore:
@@ -20,7 +22,14 @@ def _get_store() -> DatabaseTagStore:
 
     global _STORE
     if _STORE is None:
-        database_url = os.getenv("EMOTION_DB_URL")
+        raw_url = os.getenv("EMOTION_DB_URL")
+        database_url = raw_url.strip() if raw_url is not None else None
+        if raw_url is not None and not database_url:
+            _LOGGER.warning(
+                "EMOTION_DB_URL is empty (value: %r); defaulting to SQLite storage",
+                raw_url
+            )
+            database_url = None
         _STORE = DatabaseTagStore(database_url=database_url)
     return _STORE
 
