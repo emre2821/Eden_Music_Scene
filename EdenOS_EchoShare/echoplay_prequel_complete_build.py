@@ -275,13 +275,12 @@ class PlaylistApp(MDApp):
             Clock.schedule_once(lambda dt: self.hide_loading(), 0)
 
     def show_loading(self, message: str = "Loading..."):
-        if hasattr(self, "loading_container"):
-            self.loading_label.text = message
-            self.loading_spinner.active = True
-            self.loading_container.opacity = 1
-            self.loading_container.height = getattr(
-                self, "_loading_height", self.loading_container.height
-            )
+        self.loading_label.text = message
+        self.loading_spinner.active = True
+        self.loading_container.opacity = 1
+        self.loading_container.height = getattr(
+            self, "_loading_height", self.loading_container.height
+        )
 
     def hide_loading(self):
         if hasattr(self, "loading_container"):
