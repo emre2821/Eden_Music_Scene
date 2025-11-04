@@ -77,8 +77,7 @@ except ImportError:
             self.text = kwargs.get("text", "")
 
         def on_release(self, *args, **kwargs):
-            callback = kwargs.get("on_release")
-            if callback:
+            if callback := kwargs.get("on_release"):
                 callback(None)
 
     class MDDialog:
