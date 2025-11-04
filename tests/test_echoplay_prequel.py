@@ -67,6 +67,41 @@ def test_generate_playlist_uses_ai_when_loaded(monkeypatch, capsys):
     output = capsys.readouterr().out
     assert "using rule-based generator" not in output
 
+def test_generate_playlist_ai_curator_missing_is_loaded(monkeypatch, capsys):
+    module = load_module(monkeypatch)
+    cli = module.PlaylistCLI()
+    mock_curator = Mock()
+    # Remove is_loaded attribute
+    if hasattr(mock_curator, "is_loaded"):
+        del mock_curator.is_loaded
+    cli.ai_curator = mock_curator
+
+    inputs = iter(["Dreamwave", "2"])
+    monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
+
+    cli.generate_playlist_cli()
+
+    # Should fallback to rule-based generator
+    output = capsys.readouterr().out
+    assert "using rule-based generator" in output
+
+def test_generate_playlist_ai_curator_is_loaded_not_callable(monkeypatch, capsys):
+    module = load_module(monkeypatch)
+    cli = module.PlaylistCLI()
+    mock_curator = Mock()
+    # Set is_loaded to a non-callable value
+    mock_curator.is_loaded = True
+    cli.ai_curator = mock_curator
+
+    inputs = iter(["Dreamwave", "2"])
+    monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
+
+    cli.generate_playlist_cli()
+
+    # Should fallback to rule-based generator
+    output = capsys.readouterr().out
+    assert "using rule-based generator" in output
+
 
 def test_generate_playlist_falls_back_when_model_not_loaded(monkeypatch, capsys):
     module = load_module(monkeypatch)
