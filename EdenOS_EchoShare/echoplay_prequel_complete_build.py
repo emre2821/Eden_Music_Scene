@@ -9,7 +9,7 @@ import sys
 import threading
 import webbrowser
 from datetime import datetime
-from typing import Dict
+from typing import Dict, List
 from urllib.parse import quote_plus
 
 # Kivy imports (optional, will fallback to CLI if unavailable)
@@ -31,6 +31,39 @@ try:
 except ImportError:
     GUI_AVAILABLE = False
 
+    class MDApp:  # type: ignore[override]
+        def run(self):  # pragma: no cover - GUI stub
+            raise RuntimeError("GUI components are unavailable on this system.")
+
+    class MDRaisedButton:  # pragma: no cover - GUI stub
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class MDDialog:  # pragma: no cover - GUI stub
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def open(self):
+            raise RuntimeError("GUI components are unavailable on this system.")
+
+    class ThreeLineListItem:  # pragma: no cover - GUI stub
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def add_widget(self, *args, **kwargs):
+            pass
+
+    class MDScreen:  # pragma: no cover - GUI stub
+        pass
+
+    class MDIconButton:  # pragma: no cover - GUI stub
+        def __init__(self, *args, **kwargs):
+            pass
+
+    class Clock:  # pragma: no cover - GUI stub
+        @staticmethod
+        def schedule_once(*args, **kwargs):
+            raise RuntimeError("GUI components are unavailable on this system.")
     def dp(value):
         return value
 
@@ -120,6 +153,19 @@ except ImportError:
     class AIPlaylistCurator:
         def is_loaded(self):
             return False
+
+
+# Topic generator fallback
+def _import_topic_generator():
+    try:
+        from music_topic_gen import MusicTopicGenerator
+    except ImportError as exc:
+        raise ImportError(
+            "MusicTopicGenerator is required when the AI curator is unavailable. "
+            "Install the optional dependency with `pip install music-topic-gen` or "
+            "include the bundled helper module."
+        ) from exc
+    return MusicTopicGenerator
 
 
 try:
@@ -314,6 +360,7 @@ class PlaylistCLI:
     def __init__(self):
         self.ai_curator = AIPlaylistCurator()
         self.youtube_manager = YouTubePlaylistManager()
+        self._topic_generator = None
 
     def run(self):
         print("🎵 AI Playlist Curator - Command Line Interface")
@@ -349,6 +396,7 @@ class PlaylistCLI:
             count = 20
         print(f"\nGenerating {count} songs for '{topic}'...")
         try:
+            songs = self.generate_playlist(topic, count)
             use_ai = False
             if AI_AVAILABLE and hasattr(self.ai_curator, "is_loaded"):
                 is_loaded = self.ai_curator.is_loaded
@@ -365,8 +413,33 @@ class PlaylistCLI:
             for i, song in enumerate(songs, 1):
                 print(f"{i:2d}. {song['artist']} - {song['title']}")
                 print(f"    Genre: {song['genre']} | {song['reason']}")
+        except ImportError as e:
+            print(f"Missing dependency: {e}")
         except Exception as e:
             print(f"Error generating playlist: {e}")
+
+    def _ai_ready(self) -> bool:
+        if not AI_AVAILABLE:
+            return False
+        loaded = getattr(self.ai_curator, "is_loaded", False)
+        if callable(loaded):
+            try:
+                return bool(loaded())
+            except TypeError:
+                return bool(loaded)
+        return bool(loaded)
+
+    def _get_topic_generator(self):
+        if self._topic_generator is None:
+            generator_cls = _import_topic_generator()
+            self._topic_generator = generator_cls()
+        return self._topic_generator
+
+    def generate_playlist(self, topic: str, count: int) -> List[Dict]:
+        if self._ai_ready():
+            return self.ai_curator.generate_playlist_with_ai(topic, count)
+        generator = self._get_topic_generator()
+        return generator.generate_from_topic(topic, count)
 
     def load_ai_model(self):
         if not AI_AVAILABLE:
