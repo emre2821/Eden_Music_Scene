@@ -204,10 +204,7 @@ class PlaylistCLI:
             use_ai = False
             if AI_AVAILABLE and hasattr(self.ai_curator, "is_loaded"):
                 is_loaded = self.ai_curator.is_loaded
-                if callable(is_loaded):
-                    use_ai = bool(is_loaded())
-                else:
-                    use_ai = bool(is_loaded)
+                use_ai = bool(is_loaded()) if callable(is_loaded) else bool(is_loaded)
             if use_ai:
                 songs = self.ai_curator.generate_playlist_with_ai(topic, count)
             else:
