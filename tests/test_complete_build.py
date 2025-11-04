@@ -14,9 +14,7 @@ def test_complete_build_creates_playlist(tmp_path, monkeypatch):
     original_expanduser = os.path.expanduser
 
     def fake_expanduser(path):
-        if path == EXPECTED_BASE:
-            return str(target_dir)
-        return original_expanduser(path)
+        return str(target_dir) if path == EXPECTED_BASE else original_expanduser(path)
 
     monkeypatch.setattr(os.path, "expanduser", fake_expanduser)
 
