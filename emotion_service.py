@@ -25,8 +25,7 @@ def _get_store() -> DatabaseTagStore:
         raw_url = os.getenv("EMOTION_DB_URL")
         database_url: str | None = None
         if raw_url is not None:
-            candidate = raw_url.strip()
-            if candidate:
+            if candidate := raw_url.strip():
                 database_url = candidate
             else:
                 _LOGGER.warning(
