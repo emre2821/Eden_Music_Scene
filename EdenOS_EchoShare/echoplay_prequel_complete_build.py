@@ -161,9 +161,9 @@ def _import_topic_generator():
         from music_topic_gen import MusicTopicGenerator
     except ImportError as exc:
         raise ImportError(
-            "MusicTopicGenerator is required when the AI curator is unavailable. "
-            "Install the optional dependency with `pip install music-topic-gen` or "
-            "include the bundled helper module."
+            "The bundled fallback `music_topic_gen` module could not be imported. "
+            "Ensure `music_topic_gen.py` is present in the project or install an "
+            "alternative implementation providing `MusicTopicGenerator`."
         ) from exc
     return MusicTopicGenerator
 
@@ -364,6 +364,7 @@ class PlaylistCLI:
         self.ai_curator = AIPlaylistCurator()
         self.youtube_manager = YouTubePlaylistManager()
         self._topic_generator = None
+        self._used_ai_last = False
 
     def run(self):
         print("🎵 AI Playlist Curator - Command Line Interface")
@@ -399,6 +400,12 @@ class PlaylistCLI:
             count = 20
         print(f"\nGenerating {count} songs for '{topic}'...")
         try:
+            songs = self.generate_playlist(topic, count)
+            if not self._used_ai_last:
+                if AI_AVAILABLE:
+                    print("AI model not loaded yet; using rule-based generator.")
+                else:
+                    print("AI features unavailable; using bundled rule-based generator.")
             if use_ai := self._ai_ready():
                 songs = self.ai_curator.generate_playlist_with_ai(topic, count)
             else:
@@ -433,8 +440,16 @@ class PlaylistCLI:
         return self._topic_generator
 
     def generate_playlist(self, topic: str, count: int) -> List[Dict]:
+        self._used_ai_last = False
         if self._ai_ready():
-            return self.ai_curator.generate_playlist_with_ai(topic, count)
+            try:
+                songs = self.ai_curator.generate_playlist_with_ai(topic, count)
+            except Exception:
+                songs = None
+            else:
+                if isinstance(songs, list):
+                    self._used_ai_last = True
+                    return songs
         generator = self._get_topic_generator()
         return generator.generate_from_topic(topic, count)
 
