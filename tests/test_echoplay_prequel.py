@@ -140,3 +140,19 @@ def test_generate_playlist_falls_back_when_model_not_loaded(monkeypatch, capsys)
     assert cli.current_playlist == expected_playlist
     output = capsys.readouterr().out
     assert "AI model not loaded yet; using rule-based generator." in output
+
+
+def test_cli_fallback_succeeds_when_ai_unavailable(monkeypatch, capsys):
+    module = load_module(monkeypatch)
+    module.AI_AVAILABLE = False
+    cli = module.PlaylistCLI()
+
+    inputs = iter(["Chill study", "2"])
+    monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))
+
+    cli.generate_playlist_cli()
+
+    output = capsys.readouterr().out
+    assert "AI features unavailable; using bundled rule-based generator." in output
+    assert "Midnight Reverie" in output
+    assert len(cli.current_playlist) == 2
