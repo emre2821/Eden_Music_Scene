@@ -396,8 +396,7 @@ class PlaylistCLI:
             count = 20
         print(f"\nGenerating {count} songs for '{topic}'...")
         try:
-            use_ai = self._ai_ready()
-            if use_ai:
+            if use_ai := self._ai_ready():
                 songs = self.ai_curator.generate_playlist_with_ai(topic, count)
             else:
                 if AI_AVAILABLE:
