@@ -396,19 +396,14 @@ class PlaylistCLI:
             count = 20
         print(f"\nGenerating {count} songs for '{topic}'...")
         try:
-            songs = self.generate_playlist(topic, count)
-            use_ai = False
-            if AI_AVAILABLE and hasattr(self.ai_curator, "is_loaded"):
-                is_loaded = self.ai_curator.is_loaded
-                use_ai = bool(is_loaded()) if callable(is_loaded) else bool(is_loaded)
+            use_ai = self._ai_ready()
             if use_ai:
                 songs = self.ai_curator.generate_playlist_with_ai(topic, count)
             else:
                 if AI_AVAILABLE:
                     print("AI model not loaded yet; using rule-based generator.")
-                from music_topic_gen import MusicTopicGenerator
-
-                songs = MusicTopicGenerator().generate_from_topic(topic, count)
+                generator = self._get_topic_generator()
+                songs = generator.generate_from_topic(topic, count)
             self.current_playlist = songs
             for i, song in enumerate(songs, 1):
                 print(f"{i:2d}. {song['artist']} - {song['title']}")
