@@ -16,8 +16,9 @@ import emotion_service
 from emotion_storage import DatabaseTagStore
 
 
-def test_get_store_defaults_for_blank_env(monkeypatch, caplog):
-    monkeypatch.setenv("EMOTION_DB_URL", "")
+@pytest.mark.parametrize("env_value", ["", "   "])
+def test_get_store_defaults_for_blank_env(monkeypatch, caplog, env_value):
+    monkeypatch.setenv("EMOTION_DB_URL", env_value)
     monkeypatch.setattr(emotion_service, "_STORE", None)
 
     with caplog.at_level("WARNING"):
