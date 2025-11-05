@@ -320,6 +320,8 @@ class PlaylistApp(MDApp):
             Clock.schedule_once(lambda dt: self.hide_loading(), 0)
 
     def show_loading(self, message: str = "Loading..."):
+        if not hasattr(self, "loading_container"):
+            return
         self.loading_label.text = message
         self.loading_spinner.active = True
         self.loading_container.opacity = 1
@@ -328,11 +330,12 @@ class PlaylistApp(MDApp):
         )
 
     def hide_loading(self):
-        if hasattr(self, "loading_container"):
-            self.loading_spinner.active = False
-            self.loading_container.opacity = 0
-            self.loading_container.height = 0
-            self.loading_label.text = ""
+        if not hasattr(self, "loading_container"):
+            return
+        self.loading_spinner.active = False
+        self.loading_container.opacity = 0
+        self.loading_container.height = 0
+        self.loading_label.text = ""
 
     def clear_playlist(self, instance):
         self.current_playlist = []
@@ -403,6 +406,13 @@ class PlaylistCLI:
                     print("AI model not loaded yet; using rule-based generator.")
                 else:
                     print("AI features unavailable; using bundled rule-based generator.")
+            if use_ai := self._ai_ready():
+                songs = self.ai_curator.generate_playlist_with_ai(topic, count)
+            else:
+                if AI_AVAILABLE:
+                    print("AI model not loaded yet; using rule-based generator.")
+                generator = self._get_topic_generator()
+                songs = generator.generate_from_topic(topic, count)
             self.current_playlist = songs
             for i, song in enumerate(songs, 1):
                 print(f"{i:2d}. {song['artist']} - {song['title']}")

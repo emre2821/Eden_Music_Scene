@@ -23,13 +23,15 @@ def _get_store() -> DatabaseTagStore:
     global _STORE
     if _STORE is None:
         raw_url = os.getenv("EMOTION_DB_URL")
-        database_url = raw_url.strip() if raw_url is not None else None
-        if raw_url is not None and not database_url:
-            _LOGGER.warning(
-                "EMOTION_DB_URL is empty (value: %r); defaulting to SQLite storage",
-                raw_url
-            )
-            database_url = None
+        database_url: str | None = None
+        if raw_url is not None:
+            if candidate := raw_url.strip():
+                database_url = candidate
+            else:
+                _LOGGER.warning(
+                    "EMOTION_DB_URL is empty (value: %r); defaulting to SQLite storage",
+                    raw_url,
+                )
         _STORE = DatabaseTagStore(database_url=database_url)
     return _STORE
 
