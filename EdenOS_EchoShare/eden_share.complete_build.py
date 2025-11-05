@@ -1,16 +1,14 @@
 import os
+from pathlib import Path
 
-# Define path and filename
-base_dir = os.path.expanduser("~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists")
-playlist_name = "you_wanna_fuckin_dance.m3u"
-playlist_path = os.path.join(base_dir, playlist_name)
 
-# Ensure the directory exists before writing the playlist
-os.makedirs(base_dir, exist_ok=True)
-print(f"📁 Ensured playlist directory exists at {base_dir}")
+BASE_DIR_ENV_VAR = "EDEN_ECHOSHARE_PLAYLIST_BASE_DIR"
+DEFAULT_BASE_DIR = Path("~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists").expanduser()
+PLAYLIST_NAME = "you_wanna_fuckin_dance.m3u"
+
 
 # List of songs
-songs = [
+SONGS = [
     "Maniac – Michael Sembello",
     "Boogie Shoes – KC & the Sunshine Band",
     "The Humpty Dance – Digital Underground",
@@ -53,10 +51,27 @@ songs = [
     "Hand Jive – Grease Soundtrack",
 ]
 
-# Write playlist
-with open(playlist_path, "w", encoding="utf-8") as file:
-    file.write("#EXTM3U\n")
-    for track in songs:
-        file.write(f"#EXTINF:-1,{track}\n{track}\n")
 
-print(f"✅ Playlist saved to {playlist_path}")
+def build_playlist(base_dir: Path | None = None) -> Path:
+    """Create the EchoShare playlist and return its path."""
+
+    resolved_base_dir = Path(
+        base_dir
+        or os.environ.get(BASE_DIR_ENV_VAR, DEFAULT_BASE_DIR)
+    ).expanduser()
+    playlist_path = resolved_base_dir / PLAYLIST_NAME
+
+    resolved_base_dir.mkdir(parents=True, exist_ok=True)
+    print(f"📁 Ensured playlist directory exists at {resolved_base_dir}")
+
+    with playlist_path.open("w", encoding="utf-8") as file:
+        file.write("#EXTM3U\n")
+        for track in SONGS:
+            file.write(f"#EXTINF:-1,{track}\n{track}\n")
+
+    print(f"✅ Playlist saved to {playlist_path}")
+    return playlist_path
+
+
+if __name__ == "__main__":
+    build_playlist()
