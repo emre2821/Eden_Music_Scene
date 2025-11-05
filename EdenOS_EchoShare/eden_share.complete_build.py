@@ -55,10 +55,12 @@ SONGS = [
 def build_playlist(base_dir: Path | None = None) -> Path:
     """Create the EchoShare playlist and return its path."""
 
-    resolved_base_dir = Path(
-        base_dir
-        or os.environ.get(BASE_DIR_ENV_VAR, DEFAULT_BASE_DIR)
-    ).expanduser()
+    if base_dir is None:
+        resolved_base_dir = Path(
+            os.environ.get(BASE_DIR_ENV_VAR, DEFAULT_BASE_DIR)
+        ).expanduser()
+    else:
+        resolved_base_dir = Path(base_dir).expanduser()
     playlist_path = resolved_base_dir / PLAYLIST_NAME
 
     resolved_base_dir.mkdir(parents=True, exist_ok=True)
