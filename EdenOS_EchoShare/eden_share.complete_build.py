@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 BASE_DIR_ENV_VAR = "EDEN_ECHOSHARE_PLAYLIST_BASE_DIR"
-DEFAULT_BASE_DIR = Path("~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists").expanduser()
+DEFAULT_BASE_DIR = Path("~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists")
 PLAYLIST_NAME = "you_wanna_fuckin_dance.m3u"
 
 
@@ -56,9 +56,11 @@ def build_playlist(base_dir: Path | None = None) -> Path:
     """Create the EchoShare playlist and return its path."""
 
     if base_dir is None:
-        resolved_base_dir = Path(
-            os.environ.get(BASE_DIR_ENV_VAR, DEFAULT_BASE_DIR)
-        ).expanduser()
+        env_base_dir = os.environ.get(BASE_DIR_ENV_VAR)
+        if env_base_dir is None:
+            resolved_base_dir = DEFAULT_BASE_DIR.expanduser()
+        else:
+            resolved_base_dir = Path(env_base_dir).expanduser()
     else:
         resolved_base_dir = Path(base_dir).expanduser()
     playlist_path = resolved_base_dir / PLAYLIST_NAME
