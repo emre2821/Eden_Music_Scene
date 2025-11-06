@@ -63,9 +63,11 @@ def test_generate_playlist_uses_ai_when_loaded(monkeypatch, capsys):
     cli.generate_playlist_cli()
 
     mock_curator.generate_playlist_with_ai.assert_called_once_with("Dreamwave", 2)
+    assert mock_curator.generate_playlist_with_ai.call_count == 1
     assert cli.current_playlist == expected_playlist
     output = capsys.readouterr().out
-    assert "using rule-based generator" not in output
+    assert "AI model not loaded yet; using rule-based generator." not in output
+    assert "AI features unavailable; using bundled rule-based generator." not in output
 
 def test_generate_playlist_ai_curator_missing_is_loaded(monkeypatch, capsys):
     module = load_module(monkeypatch)
