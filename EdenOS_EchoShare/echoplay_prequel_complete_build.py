@@ -406,13 +406,6 @@ class PlaylistCLI:
                     print("AI model not loaded yet; using rule-based generator.")
                 else:
                     print("AI features unavailable; using bundled rule-based generator.")
-            if use_ai := self._ai_ready():
-                songs = self.ai_curator.generate_playlist_with_ai(topic, count)
-            else:
-                if AI_AVAILABLE:
-                    print("AI model not loaded yet; using rule-based generator.")
-                generator = self._get_topic_generator()
-                songs = generator.generate_from_topic(topic, count)
             self.current_playlist = songs
             for i, song in enumerate(songs, 1):
                 print(f"{i:2d}. {song['artist']} - {song['title']}")
