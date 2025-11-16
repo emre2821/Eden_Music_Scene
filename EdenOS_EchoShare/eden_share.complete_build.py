@@ -52,17 +52,21 @@ SONGS = [
 ]
 
 
-def build_playlist(base_dir: Path | None = None) -> Path:
-    """Create the EchoShare playlist and return its path."""
-
+def _resolve_base_dir(base_dir: Path | str | None) -> Path:
     if base_dir is None:
         env_base_dir = os.environ.get(BASE_DIR_ENV_VAR)
-        if env_base_dir is None:
-            resolved_base_dir = DEFAULT_BASE_DIR.expanduser()
-        else:
-            resolved_base_dir = Path(env_base_dir).expanduser()
+        source = DEFAULT_BASE_DIR if env_base_dir is None else env_base_dir
     else:
-        resolved_base_dir = Path(base_dir).expanduser()
+        source = base_dir
+
+    expanded = os.path.expanduser(str(source))
+    return Path(expanded)
+
+
+def build_playlist(base_dir: Path | str | None = None) -> Path:
+    """Create the EchoShare playlist and return its path."""
+
+    resolved_base_dir = _resolve_base_dir(base_dir)
     playlist_path = resolved_base_dir / PLAYLIST_NAME
 
     resolved_base_dir.mkdir(parents=True, exist_ok=True)
@@ -77,5 +81,23 @@ def build_playlist(base_dir: Path | None = None) -> Path:
     return playlist_path
 
 
-if __name__ == "__main__":
-    build_playlist()
+def main(base_dir: Path | None = None) -> Path:
+    """Entrypoint that mirrors the CLI behaviour."""
+
+    return build_playlist(base_dir=base_dir)
+
+
+def _should_autorun() -> bool:
+    """Detect environments like ``runpy.run_path`` and ``python file.py``."""
+
+    if __name__ == "__main__":
+        return True
+
+    # ``runpy.run_path`` executes modules with ``__spec__`` set to ``None``.
+    # Some embedders may also omit ``__file__`` entirely, so we guard both
+    # cases to mimic ``python -m runpy`` convenience behaviour.
+    return globals().get("__spec__") is None or "__file__" not in globals()
+
+
+if _should_autorun():
+    main()
