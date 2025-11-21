@@ -60,14 +60,14 @@ Each one stands alone. Together, they reshape what music *feels* like.
 
 ### 🚀 Getting Started
 
-Install the playback dependency and launch the player:
+Install the playback dependency bundle and launch the player:
 
 ```bash
-pip install pygame
-python -m EchoPlay.player
+pip install .[youtube]
+echoplay
 ```
 
-Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*.
+Use **Open File** to choose an audio track and control playback with **Play**, **Pause**, and **Stop**. The current song title appears under *Now Playing*. The package now depends on the shared `emotion_tags_client` module from the repository root rather than vendoring its own copy.
 
 ---
 

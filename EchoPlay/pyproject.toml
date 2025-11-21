@@ -1,8 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "EchoPlay"
 version = "0.1.0"
 description = "Playback utilities"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pygame>=2.5",
+    "python-dotenv>=1.0",
+]
 
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+youtube = [
+    "google-auth-oauthlib>=1.2",
+    "google-api-python-client>=2.100",
+]
+
+[project.scripts]
+echoplay = "EchoPlay.player:main"

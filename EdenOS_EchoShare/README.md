@@ -2,23 +2,32 @@
 
 Playlist sharing scripts for the Eden ecosystem.
 
-## Dependencies
-
+## Requirements
 - Python 3.10+
+- Optional GUI extras: `kivy`, `kivymd` (install with `pip install .[gui]`)
 
-## Installation & Usage
+## Installation
+Install the package so entry points are available:
 
-1. Install Python 3 (see root README for platform-specific instructions).
-2. Navigate into the module:
-   ```bash
-   cd EdenOS_EchoShare
-   ```
-3. Run the build script:
-   ```bash
-   python edenos_echoshare.complete_mobile_build.py
-   ```
-   The script writes `.txt`, `.json`, and `.chaoslink` playlist files to the path defined at the top of the file (`EDEN_PATH`).
+```bash
+pip install .
+```
 
-### Example
+## Usage
+Build the EchoPlay prequel playlists via the console script:
 
-After running the script, check the configured `EDEN_PATH` (default `/sdcard/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare`) for the generated playlist files. Edit the `SONGS` list in the script to customize your playlist.
+```bash
+echoshare-prequel
+```
+
+You can still run the modules directly for custom paths or debugging:
+
+```bash
+python -m EdenOS_EchoShare.echoplay_prequel_complete_build
+```
+
+Generated playlist artifacts now live under `examples/` to keep the distributable clean. Inspect `examples/playlists/` for sample `.chaoslink`, `.json`, `.m3u`, and `.txt` exports.
+
+## Notes
+- Emotion tagging relies on the shared `emotion_tags_client` module in the repository root; the vendored copies have been removed to avoid drift.
+- Mobile deployment scripts (`edenos_echoshare.complete_mobile_build.py`) expect an Android-friendly path; adjust `EDEN_PATH` before running if needed.
