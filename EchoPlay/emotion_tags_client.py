@@ -1,39 +1,9 @@
-"""Client helper to interact with the emotion tag service."""
+"""Client helper to interact with the emotion tag service.
 
-import json
-from urllib import request
+This module now re-exports the shared client implementation so EchoPlay and
+other tools stay in sync on connection handling and base URL configuration.
+"""
 
-BASE_URL = "http://127.0.0.1:8000"
+from emotion_tags_client import create_tag, get_tag, get_tags, resolve_base_url
 
-
-def get_tags():
-    """Retrieve all emotion tags from the service."""
-    with request.urlopen(f"{BASE_URL}/tags") as resp:
-        return json.load(resp)
-
-
-def get_tag(tag_id: str):
-    """Retrieve a single tag by its identifier."""
-    with request.urlopen(f"{BASE_URL}/tags/{tag_id}") as resp:
-        return json.load(resp)
-
-
-def create_tag(tag: dict):
-    """Create a new emotion tag.
-
-    Parameters
-    ----------
-    tag: dict
-        Dictionary matching the emotion_tag_schema.json structure.
-
-    Returns
-    -------
-    dict
-        The created emotion tag as returned by the service.
-    """
-    data = json.dumps(tag).encode("utf-8")
-    req = request.Request(
-        f"{BASE_URL}/tags", data=data, headers={"Content-Type": "application/json"}
-    )
-    with request.urlopen(req) as resp:
-        return json.load(resp)
+__all__ = ["get_tags", "get_tag", "create_tag", "resolve_base_url"]
