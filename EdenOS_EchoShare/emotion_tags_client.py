@@ -20,31 +20,12 @@ def resolve_base_url() -> str:
 
 
 BASE_URL = resolve_base_url()
+"""Client helper to interact with the emotion tag service.
 
+Re-exporting the shared client keeps EdenOS EchoShare aligned with the
+connection handling used elsewhere in the stack.
+"""
 
-def get_tags():
-    """Retrieve all emotion tags from the service."""
-    with request.urlopen(f"{BASE_URL}/tags") as resp:
-        return json.load(resp)
+from emotion_tags_client import create_tag, get_tag, get_tags, resolve_base_url
 
-
-def get_tag(tag_id: str):
-    """Retrieve a single tag by its identifier."""
-    with request.urlopen(f"{BASE_URL}/tags/{tag_id}") as resp:
-        return json.load(resp)
-
-
-def create_tag(tag: dict):
-    """Create a new emotion tag.
-
-    Parameters
-    ----------
-    tag: dict
-        Dictionary matching the emotion_tag_schema.json structure.
-    """
-    data = json.dumps(tag).encode("utf-8")
-    req = request.Request(
-        f"{BASE_URL}/tags", data=data, headers={"Content-Type": "application/json"}
-    )
-    with request.urlopen(req) as resp:
-        return json.load(resp)
+__all__ = ["get_tags", "get_tag", "create_tag", "resolve_base_url"]
