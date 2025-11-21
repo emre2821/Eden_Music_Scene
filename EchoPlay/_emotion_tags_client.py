@@ -1,8 +1,11 @@
-"""Client helper to interact with the emotion tag service.
+"""Shared client helpers for interacting with the emotion tag service.
 
-This module vendors the lightweight helpers directly so EchoPlay's package
-remains self contained when installed standalone.
+The helpers are intentionally dependency-light so they can be reused by
+multiple apps in this repository without pulling in external HTTP client
+libraries.  A single place for the logic keeps behavior consistent across
+tools and reduces drift when endpoints evolve.
 """
+
 from __future__ import annotations
 
 import json
@@ -19,7 +22,7 @@ def resolve_base_url() -> str:
     """Return the configured base URL for the emotion service.
 
     The environment variable :envvar:`EMOTION_SERVICE_URL` can override the
-    default to point at a remote deployment. Trailing slashes are trimmed so
+    default to point at a remote deployment.  Trailing slashes are trimmed so
     URL joins remain predictable.
     """
 
@@ -48,7 +51,8 @@ def _request_json(
     except error.HTTPError as exc:
         if exc.code == 404:
             return None
-        raise ConnectionError(f"Emotion service returned HTTP {exc.code} for {url}") from exc
+        raise ConnectionError(
+            f"Emotion service returned HTTP {exc.code} for {url}") from exc
     except error.URLError as exc:
         raise ConnectionError(f"Failed to reach emotion service at {url}") from exc
 
@@ -83,14 +87,5 @@ def create_tag(tag: Dict[str, Any], *, base_url: Optional[str] = None, timeout: 
         raise ConnectionError("Emotion service did not return a response for tag creation")
     return result
 
-This module now re-exports the shared client implementation so EchoPlay and
-other tools stay in sync on connection handling and base URL configuration.
-"""
-from importlib import util as _import_util
-
-if _import_util.find_spec("emotion_tags_client") is not None:
-    from emotion_tags_client import create_tag, get_tag, get_tags, resolve_base_url
-else:
-    from ._emotion_tags_client import create_tag, get_tag, get_tags, resolve_base_url
 
 __all__ = ["get_tags", "get_tag", "create_tag", "resolve_base_url"]
