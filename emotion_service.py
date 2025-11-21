@@ -1,4 +1,10 @@
-"""Simple REST service for storing and retrieving emotion tags."""
+"""Simple REST service for storing and retrieving emotion tags.
+
+Use :mod:`emotion_tags_client` when calling the service from other Eden tools. The
+client centralizes base URL resolution (``EMOTION_SERVICE_URL``) and error
+handling so consumers stay consistent across EchoDJ, EchoPlay, and
+EdenOS_EchoShare.
+"""
 
 from __future__ import annotations
 

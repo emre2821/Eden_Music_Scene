@@ -75,3 +75,9 @@ class EchoPlayer:
 
 if __name__ == "__main__":
     EchoPlayer().run()
+
+
+def main() -> None:
+    """Entry point for console scripts."""
+
+    EchoPlayer().run()

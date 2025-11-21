@@ -1,8 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "EdenOS_EchoShare"
 version = "0.1.0"
 description = "Playlist sharing tools"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-slugify>=8.0",
+]
 
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+gui = [
+    "kivy>=2.2",
+    "kivymd>=1.1.1",
+]
+
+[project.scripts]
+echoshare-prequel = "EdenOS_EchoShare.echoplay_prequel_complete_build:main"

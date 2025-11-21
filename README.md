@@ -87,21 +87,21 @@ they form the Echo Suite arc. For a deeper orientation, see
   pip install -e .[dev]
   python dj_agent.py
   ```
-* Notes: Interfaces with YouTube via `yt-dlp`, can optionally talk to the local
-  emotion service through `emotion_tags_client.py`.
+  * Notes: Interfaces with YouTube via `yt-dlp`, and now imports the shared
+    `emotion_tags_client` helper rather than a vendored copy.
 
 ### EchoPlay — playback & ritual listening
 
 * Location: `EchoPlay/`
 * Stack: Python playback client (pygame backend)
-* Quickstart:
-  ```bash
-  cd EchoPlay
-  pip install -e .[player]
-  python -m EchoPlay.player
-  ```
-* Notes: Supports YouTube OAuth for fetching playlists; see the package README
-  for OAuth setup and the long-form philosophy behind the player.
+  * Quickstart:
+    ```bash
+    cd EchoPlay
+    pip install -e .[youtube]
+    echoplay
+    ```
+  * Notes: Supports YouTube OAuth for fetching playlists; see the package README
+    for OAuth setup and the long-form philosophy behind the player.
 
 ## Sound library curation
 

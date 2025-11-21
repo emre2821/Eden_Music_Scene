@@ -33,6 +33,9 @@ done
 
 echo "📦 Publishing EchoSplit to npm"
 pushd EchoSplit >/dev/null
+npm install
+npm test
+npm run build
 npm publish
 popd >/dev/null
 
