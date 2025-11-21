@@ -11,10 +11,39 @@ class JSONStore:
         self.data: Dict[str, Any] = {"tracks": {}, "playlist": []}
         self.load()
 
+    def _default_state(self) -> Dict[str, Any]:
+        return {"tracks": {}, "playlist": []}
+
+    def _normalize_data(self, raw: Dict[str, Any]) -> Dict[str, Any]:
+        """Ensure persisted data always has the expected structure."""
+
+        tracks = raw.get("tracks") if isinstance(raw.get("tracks"), dict) else {}
+        playlist = (
+            list(raw.get("playlist")) if isinstance(raw.get("playlist"), list) else []
+        )
+        return {"tracks": tracks, "playlist": playlist}
+
     def load(self) -> Dict[str, Any]:
         if os.path.exists(self.path):
-            with open(self.path, "r", encoding="utf-8") as f:
-                self.data = json.load(f)
+            try:
+                with open(self.path, "r", encoding="utf-8") as f:
+                    raw_data = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                # Corrupt or unreadable files should not crash the store; reset safely.
+                self.data = self._default_state()
+                self.save()
+                return self.data
+
+            if isinstance(raw_data, dict):
+                normalized = self._normalize_data(raw_data)
+                if normalized != raw_data:
+                    self.data = normalized
+                    self.save()
+                else:
+                    self.data = normalized
+                return self.data
+
+        self.data = self._default_state()
         return self.data
 
     def save(self) -> None:
