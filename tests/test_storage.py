@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -29,3 +30,27 @@ def test_record_play_and_crud(tmp_path):
     store.remove_track("a.mp3")
     assert store.get_track("a.mp3") is None
     assert store.get_playlist() == []
+
+
+def test_load_recovers_from_corrupt_file(tmp_path):
+    store_path = tmp_path / "store.json"
+    store_path.write_text("{not valid json", encoding="utf-8")
+
+    store = JSONStore(str(store_path))
+
+    assert store.get_playlist() == []
+    assert store.get_track("anything") is None
+    # Ensure the corrupted file is replaced with valid JSON structure.
+    saved_data = json.loads(store_path.read_text(encoding="utf-8"))
+    assert saved_data == {"tracks": {}, "playlist": []}
+
+
+def test_load_normalizes_missing_keys(tmp_path):
+    store_path = tmp_path / "store.json"
+    store_path.write_text(json.dumps({"playlist": ["x.mp3"]}), encoding="utf-8")
+
+    store = JSONStore(str(store_path))
+
+    assert store.get_playlist() == ["x.mp3"]
+    store.record_play("x.mp3")
+    assert store.get_track("x.mp3") == {"title": "x.mp3", "play_count": 1}
