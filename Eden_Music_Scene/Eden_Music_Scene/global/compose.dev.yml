@@ -1,0 +1,184 @@
+version: '3.8'
+
+services:
+  # Infrastructure Services
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - eden-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: eden
+      RABBITMQ_DEFAULT_PASS: eden123
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - eden-network
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: edenadmin
+      MINIO_ROOT_PASSWORD: eden123456
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - eden-network
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/observability/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - eden-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: eden123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - eden-network
+
+  # EMS Core Services
+  echodj:
+    build:
+      context: ../EchoDJ
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://eden:eden123@rabbitmq:5672/
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=edenadmin
+      - MINIO_SECRET_KEY=eden123456
+      - ENVIRONMENT=development
+    depends_on:
+      - redis
+      - rabbitmq
+      - minio
+    volumes:
+      - ../EchoDJ:/app
+    networks:
+      - eden-network
+
+  echosplit:
+    build:
+      context: ../EchoSplit
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://eden:eden123@rabbitmq:5672/
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=edenadmin
+      - MINIO_SECRET_KEY=eden123456
+      - GPU_ENABLED=true
+      - ENVIRONMENT=development
+    depends_on:
+      - redis
+      - rabbitmq
+      - minio
+    volumes:
+      - ../EchoSplit:/app
+    networks:
+      - eden-network
+
+  echoplay:
+    build:
+      context: ../EchoPlay
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://eden:eden123@rabbitmq:5672/
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=edenadmin
+      - MINIO_SECRET_KEY=eden123456
+      - ENVIRONMENT=development
+    depends_on:
+      - redis
+      - rabbitmq
+      - minio
+    volumes:
+      - ../EchoPlay:/app
+    networks:
+      - eden-network
+
+  echoshare:
+    build:
+      context: ../EchoShare
+      dockerfile: Dockerfile
+    ports:
+      - "8004:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://eden:eden123@rabbitmq:5672/
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=edenadmin
+      - MINIO_SECRET_KEY=eden123456
+      - ENVIRONMENT=development
+    depends_on:
+      - redis
+      - rabbitmq
+      - minio
+    volumes:
+      - ../EchoShare:/app
+    networks:
+      - eden-network
+
+  echostore:
+    build:
+      context: ../EchoStore
+      dockerfile: Dockerfile
+    ports:
+      - "8005:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://eden:eden123@rabbitmq:5672/
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=edenadmin
+      - MINIO_SECRET_KEY=eden123456
+      - ENVIRONMENT=development
+    depends_on:
+      - redis
+      - rabbitmq
+      - minio
+    volumes:
+      - ../EchoStore:/app
+    networks:
+      - eden-network
+
+volumes:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  eden-network:
+    driver: bridge
