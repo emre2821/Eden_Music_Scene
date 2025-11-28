@@ -398,6 +398,9 @@ class PlaylistCLI:
             count = int(input("Number of songs (default 20): ") or "20")
         except ValueError:
             count = 20
+        if count <= 0:
+            print("Song count must be positive; using default of 20.")
+            count = 20
         print(f"\nGenerating {count} songs for '{topic}'...")
         try:
             songs = self.generate_playlist(topic, count)
