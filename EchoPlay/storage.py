@@ -43,6 +43,11 @@ class JSONStore:
                     self.data = normalized
                 return self.data
 
+            # Parsed JSON is valid but not a dictionary; reset to default and persist
+            self.data = self._default_state()
+            self.save()
+            return self.data
+
         self.data = self._default_state()
         return self.data
 
