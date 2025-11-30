@@ -41,3 +41,17 @@ def test_generate_playlist_falls_back_when_model_not_loaded(monkeypatch):
     assert songs == [_make_song("Fallback Song")]
     fallback.generate_from_topic.assert_called_once_with("energy", 1)
     ai_mock.generate_playlist_with_ai.assert_not_called()
+
+
+def test_generate_playlist_cli_rejects_negative_count(monkeypatch, capsys):
+    cli = build.PlaylistCLI()
+    inputs = iter(["calm", "-5"])
+    monkeypatch.setattr("builtins.input", lambda _="": next(inputs))
+    playlist = [_make_song("Resilient Song")]
+    cli.generate_playlist = MagicMock(return_value=playlist)
+
+    cli.generate_playlist_cli()
+
+    captured = capsys.readouterr().out
+    assert "Song count must be positive" in captured
+    cli.generate_playlist.assert_called_once_with("calm", 20)
