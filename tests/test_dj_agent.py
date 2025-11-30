@@ -1,7 +1,7 @@
 import importlib.util
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parent.parent / "EchoDJ" / "dj_agent.py"
+MODULE_PATH = Path(__file__).resolve().parent.parent / "apps" / "backend" / "EchoDJ" / "dj_agent.py"
 spec = importlib.util.spec_from_file_location("dj_agent", MODULE_PATH)
 dj_agent = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(dj_agent)

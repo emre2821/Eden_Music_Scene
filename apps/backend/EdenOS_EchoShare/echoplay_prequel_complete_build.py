@@ -158,7 +158,7 @@ except ImportError:
 # Topic generator fallback
 def _import_topic_generator():
     try:
-        from music_topic_gen import MusicTopicGenerator
+        from ..music_topic_gen import MusicTopicGenerator
     except ImportError as exc:
         raise ImportError(
             "The bundled fallback `music_topic_gen` module could not be imported. "

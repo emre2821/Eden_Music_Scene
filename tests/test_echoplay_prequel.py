@@ -4,7 +4,7 @@ import types
 from unittest.mock import Mock
 
 
-MODULE_PATH = "EdenOS_EchoShare.echoplay_prequel_complete_build"
+MODULE_PATH = "apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build"
 
 
 def _install_gui_stubs(monkeypatch):

@@ -15,7 +15,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
-from emotion_storage import DatabaseTagStore
+from .emotion_storage import DatabaseTagStore
 
 
 ALLOWED_FIELDS = {"id", "track_id", "user_id", "emotion", "intensity", "notes"}
