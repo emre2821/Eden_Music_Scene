@@ -2,7 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parent.parent / "EdenOS_EchoShare" / "edenos_echoshare.complete_mobile_build.py"
+MODULE_PATH = Path(__file__).resolve().parent.parent / "apps" / "backend" / "EdenOS_EchoShare" / "edenos_echoshare.complete_mobile_build.py"
 spec = importlib.util.spec_from_file_location("echoshare_mobile", MODULE_PATH)
 mobile = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mobile)

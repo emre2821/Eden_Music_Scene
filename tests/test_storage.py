@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from EchoPlay.storage import JSONStore
+from apps.backend.EchoPlay.storage import JSONStore
 
 
 def test_save_and_load_playlist(tmp_path):

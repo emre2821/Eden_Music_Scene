@@ -1,4 +1,4 @@
-from EdenOS_EchoShare.echoplay_prequel_complete_build import GUI_AVAILABLE, PlaylistApp
+from apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build import GUI_AVAILABLE, PlaylistApp
 
 
 def test_playlist_app_build_and_loading_controls():

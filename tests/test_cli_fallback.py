@@ -1,4 +1,4 @@
-from EdenOS_EchoShare import echoplay_prequel_complete_build as cli_module
+from apps.backend.EdenOS_EchoShare import echoplay_prequel_complete_build as cli_module
 
 
 def test_cli_fallback_without_ai(monkeypatch):

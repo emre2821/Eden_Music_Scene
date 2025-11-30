@@ -7,7 +7,7 @@ experiences inside Paradigm Eden.
 
 ## Table of contents
 
-1. [Project map](#project-map)
+1. [Repository structure](#repository-structure)
 2. [Quick start](#quick-start)
 3. [Emotion tag service](#emotion-tag-service)
 4. [Echo Suite front-ends](#echo-suite-front-ends)
@@ -15,18 +15,39 @@ experiences inside Paradigm Eden.
 6. [Release rituals](#release-rituals)
 7. [Capabilities overview](#capabilities-overview)
 
-## Project map
+## Repository structure
 
-| Path                 | Purpose                                                      |
-|----------------------|--------------------------------------------------------------|
-| `emotion_service.py` | Lightweight HTTP service for storing/retrieving emotion tags |
-| `emotion_tag_schema.json` | Canonical schema describing allowed tag fields        |
-| `EchoSplit/`         | Web-based creation studio (React/Vite)                       |
-| `EchoDJ/`            | Python DJ/curation agent                                     |
-| `EchoPlay/`          | Playback & ritual listening client                           |
-| `EdenOS_EchoShare/`  | Shared libraries for agents and services                     |
-| `music_files/`       | Seed metadata, playlists, and catalog scripts                |
-| `tests/`             | Pytest suite                                                 |
+This repository is organized as a monorepo with the following layout:
+
+```
+/
+├── apps/
+│   ├── backend/          # Python code (emotion services, agents, players)
+│   │   ├── EchoDJ/       # Python DJ/curation agent
+│   │   ├── EchoPlay/     # Playback & ritual listening client
+│   │   ├── EdenOS_EchoShare/ # Shared libraries for agents
+│   │   ├── music_files/  # Seed metadata, playlists, catalog scripts
+│   │   └── emotion_*.py  # Emotion tag services
+│   └── frontend/         # TypeScript/React web frontend (EchoSplit)
+├── packages/             # Shared libraries (future)
+├── docs/                 # Documentation
+├── tests/                # Root-level tests
+├── scripts/              # Build and release scripts
+├── .github/              # GitHub workflows and configurations
+├── .gitignore
+└── README.md
+```
+
+| Path                              | Purpose                                           |
+|-----------------------------------|---------------------------------------------------|
+| `apps/backend/emotion_service.py` | Lightweight HTTP service for emotion tags         |
+| `apps/backend/emotion_tag_schema.json` | Canonical schema for tag fields              |
+| `apps/frontend/`                  | Web-based creation studio (React/Vite)            |
+| `apps/backend/EchoDJ/`            | Python DJ/curation agent                          |
+| `apps/backend/EchoPlay/`          | Playback & ritual listening client                |
+| `apps/backend/EdenOS_EchoShare/`  | Shared libraries for agents and services          |
+| `apps/backend/music_files/`       | Seed metadata, playlists, and catalog scripts     |
+| `tests/`                          | Pytest suite                                      |
 
 ## Quick start
 
@@ -42,7 +63,7 @@ For a guide to the emotion tag payload, consult
 
 ## Emotion tag service
 
-`emotion_service.py` exposes a tiny REST interface backed by in-memory
+`apps/backend/emotion_service.py` exposes a tiny REST interface backed by in-memory
 storage—ideal for local prototyping or tests. The accompanying test suite covers
 edge cases such as malformed JSON, invalid intensity ranges, and unknown
 fields.
@@ -50,7 +71,7 @@ fields.
 Run it locally:
 
 ```bash
-python emotion_service.py
+python apps/backend/emotion_service.py
 # -> Emotion tag service running on http://127.0.0.1:8000
 ```
 
@@ -66,24 +87,24 @@ they form the Echo Suite arc. For a deeper orientation, see
 
 ### EchoSplit — creation & mixing
 
-* Location: `EchoSplit/`
+* Location: `apps/frontend/`
 * Stack: React + Vite + TypeScript
 * Quickstart:
   ```bash
-  cd EchoSplit
+  cd apps/frontend
   npm install
   npm run dev
   ```
 * Notes: Focuses on track slicing, metadata authoring, and exports that align
-  with the emotion tag schema. See `EchoSplit/README.md` for component lore.
+  with the emotion tag schema. See `apps/frontend/README.md` for component lore.
 
 ### EchoDJ — curation & live resonance
 
-* Location: `EchoDJ/`
+* Location: `apps/backend/EchoDJ/`
 * Stack: Python GUI (`tkinter`) + async helpers
 * Quickstart:
   ```bash
-  cd EchoDJ
+  cd apps/backend/EchoDJ
   pip install -e .[dev]
   python dj_agent.py
   ```
@@ -92,11 +113,11 @@ they form the Echo Suite arc. For a deeper orientation, see
 
 ### EchoPlay — playback & ritual listening
 
-* Location: `EchoPlay/`
+* Location: `apps/backend/EchoPlay/`
 * Stack: Python playback client (pygame backend)
   * Quickstart:
     ```bash
-    cd EchoPlay
+    cd apps/backend/EchoPlay
     pip install -e .[youtube]
     echoplay
     ```
@@ -105,7 +126,7 @@ they form the Echo Suite arc. For a deeper orientation, see
 
 ## Sound library curation
 
-The `music_files/` directory collects seed playlists and helper scripts. Use
+The `apps/backend/music_files/` directory collects seed playlists and helper scripts. Use
 these guidelines when extending the catalog:
 
 1. Keep raw discovery output inside `scanner.py` and normalized results inside
@@ -120,7 +141,7 @@ these guidelines when extending the catalog:
 
 ## Release rituals
 
-All packaging happens via `release.sh`, which now verifies tooling, clears stale
+All packaging happens via `scripts/release.sh`, which now verifies tooling, clears stale
 builds, and runs `pytest` before uploading artifacts. See
 [`RELEASE.md`](RELEASE.md) for the full ceremonial checklist.
 

@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from EdenOS_EchoShare import echoplay_prequel_complete_build as build
+from apps.backend.EdenOS_EchoShare import echoplay_prequel_complete_build as build
 
 
 def _make_song(title: str) -> dict:

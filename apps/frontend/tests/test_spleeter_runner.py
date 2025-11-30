@@ -5,7 +5,7 @@ import pytest
 
 
 spleeter = pytest.importorskip("spleeter")
-spleeter_runner = importlib.import_module("EchoSplit.04_src.00_core.spleeter_runner")
+spleeter_runner = importlib.import_module("apps.frontend.04_src.00_core.spleeter_runner")
 
 
 

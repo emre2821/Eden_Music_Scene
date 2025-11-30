@@ -4,7 +4,7 @@ import types
 from unittest.mock import Mock
 
 
-MODULE_PATH = "EdenOS_EchoShare.echoplay_prequel_complete_build"
+MODULE_PATH = "apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build"
 
 
 def _install_gui_stubs(monkeypatch):
@@ -130,7 +130,7 @@ def test_generate_playlist_falls_back_when_model_not_loaded(monkeypatch, capsys)
     dummy_module = types.SimpleNamespace(
         MusicTopicGenerator=lambda: generator_instance
     )
-    monkeypatch.setitem(sys.modules, "music_topic_gen", dummy_module)
+    monkeypatch.setitem(sys.modules, "apps.backend.music_topic_gen", dummy_module)
 
     inputs = iter(["Starlight", "1"])
     monkeypatch.setattr("builtins.input", lambda prompt="": next(inputs))

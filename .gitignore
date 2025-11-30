@@ -183,3 +183,8 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# TypeScript/Node specific
+apps/frontend/dist/
+apps/frontend/dist-ssr/
+*.local
+.DS_Store

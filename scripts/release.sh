@@ -24,7 +24,7 @@ pytest
 echo "📦 Building and publishing Python packages"
 for project in EchoDJ EchoPlay EdenOS_EchoShare; do
   echo "→ Releasing $project"
-  pushd "$project" >/dev/null
+  pushd "apps/backend/$project" >/dev/null
   rm -rf dist
   python -m build
   twine upload --skip-existing dist/*
@@ -32,7 +32,7 @@ for project in EchoDJ EchoPlay EdenOS_EchoShare; do
 done
 
 echo "📦 Publishing EchoSplit to npm"
-pushd EchoSplit >/dev/null
+pushd apps/frontend >/dev/null
 npm install
 npm run build
 npm publish
