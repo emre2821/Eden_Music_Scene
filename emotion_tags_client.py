@@ -27,10 +27,14 @@ def resolve_base_url() -> str:
     """
 
     override = os.getenv(_BASE_URL_ENV)
-    if override:
-        cleaned = override.strip()
-        return cleaned[:-1] if cleaned.endswith("/") else cleaned
-    return DEFAULT_BASE_URL
+    if override is None:
+        return DEFAULT_BASE_URL
+
+    cleaned = override.strip()
+    if not cleaned:
+        return DEFAULT_BASE_URL
+
+    return cleaned[:-1] if cleaned.endswith("/") else cleaned
 
 
 def _build_url(path: str, base_url: Optional[str] = None) -> str:
