@@ -15,7 +15,7 @@ def load_player(monkeypatch):
     fake_pygame = types.SimpleNamespace(mixer=fake_mixer)
     monkeypatch.setitem(sys.modules, "pygame", fake_pygame)
 
-    module = importlib.import_module("EchoSplit.04_src.02_logic.player")
+    module = importlib.import_module("apps.frontend.04_src.02_logic.player")
     return module, fake_music
 
 
