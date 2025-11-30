@@ -45,6 +45,18 @@ def test_load_recovers_from_corrupt_file(tmp_path):
     assert saved_data == {"tracks": {}, "playlist": []}
 
 
+def test_load_resets_when_json_is_not_dict(tmp_path):
+    store_path = tmp_path / "store.json"
+    store_path.write_text(json.dumps(["not", "a", "dict"]), encoding="utf-8")
+
+    store = JSONStore(str(store_path))
+
+    assert store.get_playlist() == []
+    assert store.get_track("anything") is None
+    saved_data = json.loads(store_path.read_text(encoding="utf-8"))
+    assert saved_data == {"tracks": {}, "playlist": []}
+
+
 def test_load_normalizes_missing_keys(tmp_path):
     store_path = tmp_path / "store.json"
     store_path.write_text(json.dumps({"playlist": ["x.mp3"]}), encoding="utf-8")
