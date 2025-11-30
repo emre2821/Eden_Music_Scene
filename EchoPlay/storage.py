@@ -9,7 +9,12 @@ class JSONStore:
     def __init__(self, filename: str = "playlist_data.json") -> None:
         self.path = os.path.join(os.path.dirname(__file__), filename)
         self.data: Dict[str, Any] = {"tracks": {}, "playlist": []}
+        self._ensure_parent_dir()
         self.load()
+
+    def _ensure_parent_dir(self) -> None:
+        parent_dir = os.path.dirname(self.path) or "."
+        os.makedirs(parent_dir, exist_ok=True)
 
     def _default_state(self) -> Dict[str, Any]:
         return {"tracks": {}, "playlist": []}
@@ -47,6 +52,7 @@ class JSONStore:
         return self.data
 
     def save(self) -> None:
+        self._ensure_parent_dir()
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(self.data, f, indent=2)
 
