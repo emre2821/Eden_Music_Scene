@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/emre2821/Eden_Music_Scene/tree/main/docs
+    about: Check our documentation before opening an issue
+  - name: 💬 Discussions
+    url: https://github.com/emre2821/Eden_Music_Scene/discussions
+    about: Have a question? Start a discussion instead of opening an issue
