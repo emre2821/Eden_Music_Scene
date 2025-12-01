@@ -11,6 +11,8 @@ export default defineConfig(({ mode }) => {
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
+          './components': path.resolve(__dirname, '01_components'),
+          './services': path.resolve(__dirname, '02_services'),
         }
       },
       test: {
