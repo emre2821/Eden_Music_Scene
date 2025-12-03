@@ -85,7 +85,8 @@ class Resonance:
                                     # Split by '&' and then by ',' for the first part
                                     parts = names.split(' & ')
                                     primary_names = [n.strip() for n in parts[0].split(',')]
-                                    secondary_names = [n.strip() for n in parts[1].split(',')] # In case the second part also has commas
+                                    # In case the second part also has commas
+                                    secondary_names = [n.strip() for n in parts[1].split(',')]
                                     all_names = primary_names + secondary_names
                                 else:
                                     all_names = [n.strip() for n in names.split(',')]
