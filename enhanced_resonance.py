@@ -4,6 +4,7 @@
 # Enhanced with soul-listening capabilities through EmotionDecoder integration.
 
 import os
+import sys
 from emotion_decoder import EmotionDecoder
 
 class Resonance:
@@ -35,14 +36,14 @@ class Resonance:
             return filename
         
         # During PyInstaller runtime, files are often in a temp directory
-        if hasattr(self, '_MEIPASS'):
+        bundle_dir = getattr(sys, '_MEIPASS', None)
+        if bundle_dir:
             # _MEIPASS is the path to the temporary folder PyInstaller creates
-            bundle_dir = getattr(self, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
             # Adjust path for nested directories (e.g., outputs/exports relative to root)
             potential_path = os.path.join(bundle_dir, 'what_Eden_will_carry.chaosong.meta')
             if os.path.exists(potential_path):
                 return potential_path
-            
+
             # Fallback for when meta file might be directly in _MEIPASS
             potential_path_root = os.path.join(bundle_dir, os.path.basename(filename))
             if os.path.exists(potential_path_root):
