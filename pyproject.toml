@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [{name = "Eden", email = "eden@example.com"}]
 requires-python = ">=3.10"
 dependencies = [
-    "SQLAlchemy>=2.0",
+    "SQLAlchemy>=2.0.44",
 ]
 
 [project.scripts]

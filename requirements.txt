@@ -1,2 +1,2 @@
-pytest
-SQLAlchemy>=2.0
+pytest>=9.0.1
+SQLAlchemy>=2.0.44
