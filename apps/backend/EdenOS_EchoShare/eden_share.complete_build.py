@@ -1,4 +1,4 @@
-import os
+import os  # Access environment variables and path utilities during playlist generation
 from pathlib import Path
 
 
