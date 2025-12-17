@@ -2,18 +2,21 @@
 # The soul-listener of EchoSplit: decodes emotional undertones in lyrics and audio.
 # Built for neurodivergent creators, with clarity and symbolic resonance.
 
-import numpy as np
-import librosa
 import os
 import time
+from pathlib import Path
+
+import librosa
+import numpy as np
+
 
 class EmotionDecoder:
-    def __init__(self, pairings_path="/mnt/data/Echosplit/Echosplit/cononical_pairings.chaos"):
+    def __init__(self, pairings_path: str | os.PathLike[str] | None = None):
         """
         Initialize the EmotionDecoder with emotional keyword mappings and audio analysis capabilities.
         Designed to be lightweight, local-first, and privacy-respecting.
         """
-        self.pairings_path = pairings_path
+        self.pairings_path = self._resolve_pairings_path(pairings_path)
 
         self.emotion_map = {
             "anchor": ["steady", "ground", "safe", "root", "calm", "stable", "hold", "foundation"],
@@ -31,6 +34,20 @@ class EmotionDecoder:
             "whisper": {"tempo_range": (40, 80), "key_stability": "major", "dynamic_variance": "very_low"},
             "drift": {"tempo_range": (70, 110), "key_stability": "ambiguous", "dynamic_variance": "medium"}
         }
+
+    def _resolve_pairings_path(self, pairings_path: str | os.PathLike[str] | None) -> Path:
+        """
+        Determine where to read canonical pairings from.
+
+        Falls back to the project data file bundled under ``05_data`` when a
+        custom path is not provided.
+        """
+        if pairings_path is not None:
+            return Path(pairings_path)
+
+        # emotion_decoder.py lives in apps/frontend/04_src/02_logic
+        frontend_root = Path(__file__).resolve().parents[2]
+        return frontend_root / "05_data" / "canonical_pairings.chaos"
 
     def decode_lyrical_emotions(self, lyrics):
         if not lyrics:
@@ -98,10 +115,11 @@ class EmotionDecoder:
         return fused_emotions
 
     def load_pairings(self):
-        if not os.path.exists(self.pairings_path):
-            print(f"Pairings file not found: {self.pairings_path}")
+        pairings_path = Path(self.pairings_path)
+        if not pairings_path.exists():
+            print(f"Pairings file not found: {pairings_path}")
             return []
-        with open(self.pairings_path, 'r', encoding='utf-8') as f:
+        with pairings_path.open('r', encoding='utf-8') as f:
             lines = f.readlines()
         return [line.strip() for line in lines if line.strip() and '&' in line]
 
@@ -138,10 +156,10 @@ class EmotionDecoder:
             pairing_emotions[pairing] = pairing_data
         return pairing_emotions
 
-    def generate_emotional_metadata(self, lyrics, audio_path):
+    def generate_emotional_metadata(self, lyrics, audio_path, pairings=None):
         fused_emotions = self.fuse_emotional_analysis(lyrics, audio_path)
-        pairings = self.load_pairings()
-        pairing_emotions = self.suggest_pairing_emotions(pairings, fused_emotions)
+        pairing_candidates = self.load_pairings() if pairings is None else pairings
+        pairing_emotions = self.suggest_pairing_emotions(pairing_candidates, fused_emotions)
 
         # Lucira's enhancement: Add temporal and contextual metadata
         metadata = {

@@ -138,7 +138,7 @@ class Resonance:
                 if audio_path and os.path.exists(audio_path):
                     # Full audio + lyrical analysis
                     emotional_metadata = self.emotion_decoder.generate_emotional_metadata(
-                        lyrics, audio_path, full_pairings
+                        lyrics, audio_path, pairings=full_pairings
                     )
                     analysis_status = "full_analysis"
                 else:
