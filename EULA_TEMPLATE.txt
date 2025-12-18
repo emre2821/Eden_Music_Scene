@@ -1,0 +1,23 @@
+EULA (End-User License Agreement) — Eden Music Scene
+
+[Company Name] End-User License Agreement (EULA)
+
+1. License Grant
+[Company Name] grants you a non-exclusive, non-transferable license to use the Eden Music Scene software subject to the terms of this agreement.
+
+2. Restrictions
+You may not redistribute or resell the software or bundled licensed audio without explicit permission.
+
+3. Intellectual Property
+All copyright and other intellectual property rights in the software remain the property of [Company Name] and its licensors.
+
+4. Warranty and Liability
+The software is provided "as is" without warranty. [Company Name] is not liable for indirect, incidental, or consequential damages.
+
+5. Termination
+This agreement terminates if you breach any of its terms.
+
+6. Governing Law
+This agreement is governed by the laws of [Jurisdiction].
+
+Replace bracketed items with your company information and consult legal counsel before commercial use.

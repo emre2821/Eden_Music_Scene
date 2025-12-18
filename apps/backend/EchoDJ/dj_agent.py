@@ -251,3 +251,25 @@ class AIDJApp:
 
 
 __all__ = ["AIDJApp", "build_yt_dlp_search_command"]
+
+
+def main() -> None:
+    """Launch the AI DJ GUI application.
+
+    This function provides a simple console entrypoint used by packaging
+    scripts. It creates a Tk root window and runs the :class:`AIDJApp`.
+    """
+
+    root = tk.Tk()
+    app = AIDJApp(root)
+    try:
+        root.mainloop()
+    finally:
+        try:
+            root.destroy()
+        except Exception:
+            pass
+
+
+if __name__ == "__main__":
+    main()

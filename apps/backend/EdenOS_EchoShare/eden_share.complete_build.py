@@ -59,7 +59,18 @@ def _resolve_base_dir(base_dir: Path | str | None) -> Path:
     else:
         source = base_dir
 
-    expanded = os.path.expanduser(str(source))
+    # On some platforms (notably Windows) str(Path("~/...") ) will use
+    # backslashes, while tests may compare against a POSIX-style string like
+    # "~/EdenOS_Mobile/...". To ensure the monkeypatch in tests matches the
+    # exact argument passed to os.path.expanduser, when source is a Path we
+    # convert to a POSIX-style string before expanding. For other types, use
+    # the normal string conversion.
+    if isinstance(source, Path):
+        to_expand = source.as_posix()
+    else:
+        to_expand = str(source)
+
+    expanded = os.path.expanduser(to_expand)
     return Path(expanded)
 
 
