@@ -52,6 +52,8 @@ def _request_json(
     try:
         with request.urlopen(req, timeout=timeout) as resp:  # type: ignore[arg-type]
             return json.load(resp)
+    except json.JSONDecodeError as exc:
+        raise ConnectionError(f"Emotion service returned invalid JSON for {url}") from exc
     except error.HTTPError as exc:
         if exc.code == 404:
             return None
