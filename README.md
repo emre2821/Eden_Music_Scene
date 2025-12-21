@@ -55,27 +55,104 @@ This repository is organized as a monorepo with the following layout:
 
 ## Quick start
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pytest
-```
+### Prerequisites
+
+-   Python 3.10 or higher
+-   Node.js 20 or higher (for frontend development)
+-   System packages: `python3-tk` (for GUI components)
+
+### Backend Setup
+
+1. **Create and activate a virtual environment:**
+
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ```
+
+2. **Install dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    pip install -e .
+    ```
+
+3. **Set up environment variables:**
+
+    ```bash
+    cp .env.example .env
+    # Edit .env if you want to customize database URL or other settings
+    ```
+
+4. **Run tests to verify installation:**
+
+    ```bash
+    pytest
+    # Expected: 49 passed, 1 skipped
+    ```
+
+### Frontend Setup
+
+1. **Install dependencies:**
+
+    ```bash
+    cd apps/frontend
+    npm ci
+    ```
+
+2. **Run frontend tests:**
+
+    ```bash
+    npm test
+    ```
+
+3. **Build or run dev server:**
+
+    ```bash
+    npm run build  # Production build
+    npm run dev    # Development server (http://localhost:5173)
+    ```
+
+### Smoke Test
+
+After setup, test the core services:
+
+1. **Start the emotion tag service:**
+
+    ```bash
+    python -m apps.backend.emotion_service
+    # Service will run on http://127.0.0.1:8000
+    ```
+
+2. **Test the API in another terminal:**
+
+    ```bash
+    # Get all tags (should return empty array initially)
+    curl http://127.0.0.1:8000/tags
+
+    # Create a tag
+    curl -X POST http://127.0.0.1:8000/tags \
+      -H "Content-Type: application/json" \
+      -d '{"track_id":"test-001","emotion":"serenity","intensity":0.8}'
+
+    # Verify tag was created
+    curl http://127.0.0.1:8000/tags
+    ```
 
 For a guide to the emotion tag payload, consult
 [`docs/emotion_tag_schema.md`](docs/emotion_tag_schema.md).
 
 ## Emotion tag service
 
-`apps/backend/emotion_service.py` exposes a tiny REST interface backed by in-memory
-storage—ideal for local prototyping or tests. The accompanying test suite covers
-edge cases such as malformed JSON, invalid intensity ranges, and unknown
-fields.
+`apps/backend/emotion_service.py` exposes a tiny REST interface backed by
+SQLite storage—ideal for local prototyping or tests. The accompanying test
+suite covers edge cases such as malformed JSON, invalid intensity ranges, and
+unknown fields.
 
 Run it locally:
 
 ```bash
-python apps/backend/emotion_service.py
+python -m apps.backend.emotion_service
 # -> Emotion tag service running on http://127.0.0.1:8000
 ```
 
