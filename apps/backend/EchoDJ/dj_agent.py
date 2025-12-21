@@ -261,7 +261,7 @@ def main() -> None:
     """
 
     root = tk.Tk()
-    app = AIDJApp(root)
+    AIDJApp(root)
     try:
         root.mainloop()
     finally:

@@ -1,11 +1,12 @@
-
-import os
 import json
+import os
+
 import eyed3
 import librosa
 import numpy as np
 
 CONFIG_PATH = "musical_decoder_config.json"
+
 
 def load_config():
     if os.path.exists(CONFIG_PATH):
@@ -13,16 +14,19 @@ def load_config():
             return json.load(f)
     return {}
 
+
 def save_config(config):
     with open(CONFIG_PATH, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=4)
 
+
 def estimate_key(y, sr):
     chroma = librosa.feature.chroma_cens(y=y, sr=sr)
     chroma_mean = chroma.mean(axis=1)
-    keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     key_index = np.argmax(chroma_mean)
     return keys[key_index]
+
 
 def process_track(dirpath, filename, output_folder):
     full_path = os.path.join(dirpath, filename)
@@ -37,10 +41,18 @@ def process_track(dirpath, filename, output_folder):
         tempo = "?"
         key = "?"
 
-    title = audiofile.tag.title if audiofile and audiofile.tag else filename.replace(".mp3", "")
+    title = (
+        audiofile.tag.title
+        if audiofile and audiofile.tag
+        else filename.replace(".mp3", "")
+    )
     artist = audiofile.tag.artist if audiofile and audiofile.tag else "Unknown"
     album = audiofile.tag.album if audiofile and audiofile.tag else "Unknown"
-    genre = audiofile.tag.genre.name if audiofile and audiofile.tag and audiofile.tag.genre else "Unlabeled"
+    genre = (
+        audiofile.tag.genre.name
+        if audiofile and audiofile.tag and audiofile.tag.genre
+        else "Unlabeled"
+    )
     duration = round(audiofile.info.time_secs) if audiofile and audiofile.info else "?"
 
     chaos_meta = f"""
@@ -67,6 +79,7 @@ def process_track(dirpath, filename, output_folder):
         f.write(chaos_meta.strip())
 
     print(f"✅ Archived: {title} → {chaos_filename}")
+
 
 def scan_music_folder():
     config = load_config()

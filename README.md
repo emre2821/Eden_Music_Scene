@@ -42,16 +42,16 @@ This repository is organized as a monorepo with the following layout:
 └── README.md
 ```
 
-| Path                              | Purpose                                           |
-|-----------------------------------|---------------------------------------------------|
-| `apps/backend/emotion_service.py` | Lightweight HTTP service for emotion tags         |
-| `apps/backend/emotion_tag_schema.json` | Canonical schema for tag fields              |
-| `apps/frontend/`                  | Web-based creation studio (React/Vite)            |
-| `apps/backend/EchoDJ/`            | Python DJ/curation agent                          |
-| `apps/backend/EchoPlay/`          | Playback & ritual listening client                |
-| `apps/backend/EdenOS_EchoShare/`  | Shared libraries for agents and services          |
-| `apps/backend/music_files/`       | Seed metadata, playlists, and catalog scripts     |
-| `tests/`                          | Pytest suite                                      |
+| Path                                   | Purpose                                       |
+| -------------------------------------- | --------------------------------------------- |
+| `apps/backend/emotion_service.py`      | Lightweight HTTP service for emotion tags     |
+| `apps/backend/emotion_tag_schema.json` | Canonical schema for tag fields               |
+| `apps/frontend/`                       | Web-based creation studio (React/Vite)        |
+| `apps/backend/EchoDJ/`                 | Python DJ/curation agent                      |
+| `apps/backend/EchoPlay/`               | Playback & ritual listening client            |
+| `apps/backend/EdenOS_EchoShare/`       | Shared libraries for agents and services      |
+| `apps/backend/music_files/`            | Seed metadata, playlists, and catalog scripts |
+| `tests/`                               | Pytest suite                                  |
 
 ## Quick start
 
@@ -91,42 +91,42 @@ they form the Echo Suite arc. For a deeper orientation, see
 
 ### EchoSplit — creation & mixing
 
-* Location: `apps/frontend/`
-* Stack: React + Vite + TypeScript
-* Quickstart:
-  ```bash
-  cd apps/frontend
-  npm install
-  npm run dev
-  ```
-* Notes: Focuses on track slicing, metadata authoring, and exports that align
-  with the emotion tag schema. See `apps/frontend/README.md` for component lore.
+-   Location: `apps/frontend/`
+-   Stack: React + Vite + TypeScript
+-   Quickstart:
+    ```bash
+    cd apps/frontend
+    npm install
+    npm run dev
+    ```
+-   Notes: Focuses on track slicing, metadata authoring, and exports that align
+    with the emotion tag schema. See `apps/frontend/README.md` for component lore.
 
 ### EchoDJ — curation & live resonance
 
-* Location: `apps/backend/EchoDJ/`
-* Stack: Python GUI (`tkinter`) + async helpers
-* Quickstart:
-  ```bash
-  cd apps/backend/EchoDJ
-  pip install -e .[dev]
-  python dj_agent.py
-  ```
-  * Notes: Interfaces with YouTube via `yt-dlp`, and now imports the shared
-    `emotion_tags_client` helper rather than a vendored copy.
+-   Location: `apps/backend/EchoDJ/`
+-   Stack: Python GUI (`tkinter`) + async helpers
+-   Quickstart:
+    ```bash
+    cd apps/backend/EchoDJ
+    pip install -e .[dev]
+    python dj_agent.py
+    ```
+    -   Notes: Interfaces with YouTube via `yt-dlp`, and now imports the shared
+        `emotion_tags_client` helper rather than a vendored copy.
 
 ### EchoPlay — playback & ritual listening
 
-* Location: `apps/backend/EchoPlay/`
-* Stack: Python playback client (pygame backend)
-  * Quickstart:
-    ```bash
-    cd apps/backend/EchoPlay
-    pip install -e .[youtube]
-    echoplay
-    ```
-  * Notes: Supports YouTube OAuth for fetching playlists; see the package README
-    for OAuth setup and the long-form philosophy behind the player.
+-   Location: `apps/backend/EchoPlay/`
+-   Stack: Python playback client (pygame backend)
+    -   Quickstart:
+        ```bash
+        cd apps/backend/EchoPlay
+        pip install -e .[youtube]
+        echoplay
+        ```
+    -   Notes: Supports YouTube OAuth for fetching playlists; see the package README
+        for OAuth setup and the long-form philosophy behind the player.
 
 ## Sound library curation
 

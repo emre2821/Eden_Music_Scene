@@ -1,7 +1,7 @@
-import os
-import json
-from datetime import datetime
 import hashlib
+import json
+import os
+from datetime import datetime
 
 # -----------------------------
 # 🌱 EdenOS EchoShare Build v1.0
@@ -22,15 +22,18 @@ SONGS = [
     "Dance the Night - Dua Lipa",
     "Last Dance - Donna Summer",
     "Dance Floor Anthem - Good Charlotte",
-    "Dance with Me - Justin Timberlake"
+    "Dance with Me - Justin Timberlake",
 ]
+
 
 def log(msg):
     print(f"[EchoShare] {msg}")
 
+
 def ensure_path():
     os.makedirs(EDEN_PATH, exist_ok=True)
     log(f"✓ Folder ready: {EDEN_PATH}")
+
 
 def write_txt():
     path = os.path.join(EDEN_PATH, f"{PLAYLIST_NAME}.txt")
@@ -38,18 +41,22 @@ def write_txt():
         f.write("\n".join(SONGS))
     log(f"✓ TXT saved: {path}")
 
+
 def write_json():
     playlist = {
         "playlist_title": "EchoShare: Dance",
         "created": datetime.now().isoformat(),
-        "songs": [{"title": s.split(" - ")[0], "artist": s.split(" - ")[1]} for s in SONGS],
-        "tags": ["dance", "joy", "movement", "embodiment"]
+        "songs": [
+            {"title": s.split(" - ")[0], "artist": s.split(" - ")[1]} for s in SONGS
+        ],
+        "tags": ["dance", "joy", "movement", "embodiment"],
     }
     path = os.path.join(EDEN_PATH, f"{PLAYLIST_NAME}.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(playlist, f, indent=2)
     log(f"✓ JSON saved: {path}")
     return playlist
+
 
 def write_chaoslink(payload):
     chaos = {
@@ -59,12 +66,13 @@ def write_chaoslink(payload):
         "timestamp": payload["created"],
         "resonance": ["release", "body", "joy", "ritual"],
         "hash": hashlib.sha256(json.dumps(payload).encode()).hexdigest(),
-        "payload": payload
+        "payload": payload,
     }
     path = os.path.join(EDEN_PATH, f"{PLAYLIST_NAME}.chaoslink")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(chaos, f, indent=2)
     log(f"✓ CHAOSLINK saved: {path}")
+
 
 def main():
     log("🌼 Starting EdenOS EchoShare Mobile Build")
@@ -73,6 +81,7 @@ def main():
     data = write_json()
     write_chaoslink(data)
     log("🌸 All files created successfully.")
+
 
 if __name__ == "__main__":
     main()

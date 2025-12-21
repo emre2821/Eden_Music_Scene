@@ -8,13 +8,14 @@ import os
 import librosa
 import numpy as np
 
+
 def analyze_tempo(audio_path):
     """
     Analyze the tempo (BPM) of an audio file.
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         float: Tempo in beats per minute (BPM).
     """
@@ -27,13 +28,14 @@ def analyze_tempo(audio_path):
         tempo = float(tempo[0])
     return float(tempo)
 
+
 def analyze_genre(audio_path):
     """
     Classify the genre of an audio file (simplified example).
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         str: Detected genre (placeholder for a trained model).
     """
@@ -65,7 +67,9 @@ def main():
 
     audio_path = args.audio
     if not audio_path:
-        parser.error("Audio path must be provided via --audio flag or AUDIO_PATH environment variable.")
+        parser.error(
+            "Audio path must be provided via --audio flag or AUDIO_PATH environment variable."
+        )
 
     if not os.path.exists(audio_path):
         parser.error(f"Audio file not found: {audio_path}")

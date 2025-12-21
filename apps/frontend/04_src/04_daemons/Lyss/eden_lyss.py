@@ -1,8 +1,9 @@
 import os
 from datetime import datetime
-from modules.whisper_transcriber import transcribe_audio
+
 from modules.emotional_parser import analyze_emotion
 from modules.tts_engine import speak  # NatSpe2 or fallback engine
+from modules.whisper_transcriber import transcribe_audio
 
 
 def prompt_for_audio():

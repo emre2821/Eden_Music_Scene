@@ -67,15 +67,15 @@ const isValidSongData = (data: any): data is SongData => {
   if (data.suggestedKey !== undefined && typeof data.suggestedKey !== 'string') return false;
   if (data.suggestedBPM !== undefined && typeof data.suggestedBPM !== 'string') return false;
   if (data.vocalStyle !== undefined && typeof data.vocalStyle !== 'string') return false;
-  
+
   if (data.instrumentationIdeas !== undefined) {
     if (!Array.isArray(data.instrumentationIdeas) || !data.instrumentationIdeas.every((item: any) => typeof item === 'string')) {
       return false;
     }
   }
-  
+
   if (data.chordProgressions !== undefined) {
-    if (!Array.isArray(data.chordProgressions) || !data.chordProgressions.every((cp: any) => 
+    if (!Array.isArray(data.chordProgressions) || !data.chordProgressions.every((cp: any) =>
       typeof cp === 'object' && cp !== null && typeof cp.section === 'string' && typeof cp.chords === 'string'
     )) {
       return false;
@@ -95,7 +95,7 @@ export const generateSong = async (description: string, genre?: string, mood?: s
       "Google Gemini API key not found. Set the API_KEY environment variable to use song generation."
     );
   }
-  
+
   const prompt = constructPrompt(description, genre, mood, instruments);
 
   try {
@@ -108,13 +108,13 @@ export const generateSong = async (description: string, genre?: string, mood?: s
     });
 
     let jsonStr = response.text.trim();
-    
+
     const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
     const match = jsonStr.match(fenceRegex);
     if (match && match[2]) {
       jsonStr = match[2].trim();
     }
-    
+
     const parsedData: GeminiSongResponse = JSON.parse(jsonStr);
     const songData = Array.isArray(parsedData) ? parsedData[0] : parsedData;
 
@@ -122,7 +122,7 @@ export const generateSong = async (description: string, genre?: string, mood?: s
       console.error("Invalid song data structure received:", songData);
       throw new Error("AI returned an unexpected song format. Please try again.");
     }
-    
+
     return songData as SongData;
 
   } catch (error) {

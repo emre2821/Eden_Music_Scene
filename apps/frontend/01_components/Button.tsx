@@ -11,7 +11,7 @@ const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', isLoadin
   const baseStyle = "px-6 py-3 rounded-lg font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 transition-all duration-150 ease-in-out";
   const primaryStyle = "bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-500";
   const secondaryStyle = "bg-slate-700 hover:bg-slate-600 text-slate-100 focus:ring-slate-500";
-  
+
   const disabledStyle = "opacity-50 cursor-not-allowed";
 
   const currentStyle = variant === 'primary' ? primaryStyle : secondaryStyle;

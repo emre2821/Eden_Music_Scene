@@ -87,4 +87,3 @@ If you want, I can:
 - Add a CI workflow that builds and uploads releases to PyPI when a GitHub Release is created.
 - Create a minimal EULA template and mark the repo with a `LICENSE_COMMERCIAL.md`.
 - Produce marketing README content adapted for a sales page / product website.
-

@@ -13,11 +13,10 @@ try:
 except Exception:  # pragma: no cover - optional dependency
     pass
 
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-
 
 TOKEN_FILE = Path(__file__).with_name("youtube_token.json")
 

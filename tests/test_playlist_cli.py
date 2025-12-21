@@ -4,7 +4,12 @@ from apps.backend.EdenOS_EchoShare import echoplay_prequel_complete_build as bui
 
 
 def _make_song(title: str) -> dict:
-    return {"artist": "Test Artist", "title": title, "genre": "Test", "reason": "Because"}
+    return {
+        "artist": "Test Artist",
+        "title": title,
+        "genre": "Test",
+        "reason": "Because",
+    }
 
 
 def test_generate_playlist_uses_ai_when_loaded(monkeypatch):

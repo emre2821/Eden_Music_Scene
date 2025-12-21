@@ -17,8 +17,9 @@ DEFAULT_INTENSITY_MAP = {
     "VERY_HIGH": 4,
     "TREMORING": 5,
     "FRACTURED": 6,
-    "NUMB": 0
+    "NUMB": 0,
 }
+
 
 # Load intensity map from config, fallback to defaults
 def load_intensity_map(path=INTENSITY_CONFIG_PATH):
@@ -27,10 +28,14 @@ def load_intensity_map(path=INTENSITY_CONFIG_PATH):
             data = json.load(file)
             return {k.upper(): v for k, v in data.items()}
     except Exception:
-        print("[FRACTURE] :: intensity_config missing or broken. Using default mapping.")
+        print(
+            "[FRACTURE] :: intensity_config missing or broken. Using default mapping."
+        )
         return DEFAULT_INTENSITY_MAP
 
+
 INTENSITY_MAP = load_intensity_map()
+
 
 class CHAOSemote(Enum):
     JOY = ("positive", 1.0, 8)
@@ -50,6 +55,7 @@ class CHAOSemote(Enum):
 
     def echo(self):
         return f"[ECHO] :: {self.name} | Valence: {self.valence} | Sacredness: {self.sacredness_score}"
+
 
 # Utility: Convert a string to CHAOSemote safely
 def parse_emotion_tag(tag: str):

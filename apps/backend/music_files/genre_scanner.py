@@ -1,7 +1,8 @@
+import time
+from collections import Counter
+
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from collections import Counter
-import time
 
 # 🔐 API credentials (REPLACE THESE)
 CLIENT_ID = "your_spotify_client_id"
@@ -11,13 +12,15 @@ CLIENT_SECRET = "your_spotify_client_secret"
 SONG_FILE = r"C:\Users\emmar\Desktop\this_is_fine\unique_songs.txt"
 
 # 🎛️ Setup Spotify
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET
-))
+sp = spotipy.Spotify(
+    auth_manager=SpotifyClientCredentials(
+        client_id=CLIENT_ID, client_secret=CLIENT_SECRET
+    )
+)
 
 # 🧠 Cache to avoid repeated lookups
 artist_genre_cache = {}
+
 
 # 🧹 Extract genres
 def get_genres_for_artist(artist):
@@ -25,10 +28,10 @@ def get_genres_for_artist(artist):
         return artist_genre_cache[artist]
 
     try:
-        result = sp.search(q=f"artist:{artist}", type='artist', limit=1)
-        items = result['artists']['items']
+        result = sp.search(q=f"artist:{artist}", type="artist", limit=1)
+        items = result["artists"]["items"]
         if items:
-            genres = items[0].get('genres', [])
+            genres = items[0].get("genres", [])
             artist_genre_cache[artist] = genres
             return genres
     except Exception as e:
@@ -36,6 +39,7 @@ def get_genres_for_artist(artist):
 
     artist_genre_cache[artist] = []
     return []
+
 
 # 🔎 Main logic
 def scan_genres():
@@ -56,6 +60,7 @@ def scan_genres():
     print("\n🎧 Genre Breakdown:\n")
     for genre, count in genre_counter.most_common():
         print(f"{genre:<30} {count} song(s)")
+
 
 if __name__ == "__main__":
     scan_genres()

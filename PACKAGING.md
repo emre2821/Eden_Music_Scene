@@ -68,4 +68,3 @@ Security & legal notes
 
 - Remove private credentials and secrets from repo.
 - Double-check licenses for included dependencies and music assets.
-

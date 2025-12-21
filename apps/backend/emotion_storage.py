@@ -5,9 +5,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from sqlalchemy import Column, Float, MetaData, String, Table, Text, create_engine, delete, select, update
+from sqlalchemy import (
+    Column,
+    Float,
+    MetaData,
+    String,
+    Table,
+    Text,
+    create_engine,
+    delete,
+    select,
+    update,
+)
 from sqlalchemy.engine import Engine
-
 
 metadata = MetaData()
 
@@ -31,7 +41,9 @@ class DatabaseTagStore:
     database_url: Optional[str] = None
 
     def __post_init__(self) -> None:
-        self._engine: Engine = create_engine(self.database_url or "sqlite:///emotion_tags.db", future=True)
+        self._engine: Engine = create_engine(
+            self.database_url or "sqlite:///emotion_tags.db", future=True
+        )
         metadata.create_all(self._engine)
 
     def close(self) -> None:
@@ -54,9 +66,11 @@ class DatabaseTagStore:
         """Retrieve a single tag by identifier."""
 
         with self._engine.begin() as conn:
-            row = conn.execute(
-                select(tags_table).where(tags_table.c.id == tag_id)
-            ).mappings().first()
+            row = (
+                conn.execute(select(tags_table).where(tags_table.c.id == tag_id))
+                .mappings()
+                .first()
+            )
         return self._row_to_payload(row) if row else None
 
     def upsert_tag(self, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -76,9 +90,11 @@ class DatabaseTagStore:
             else:
                 conn.execute(tags_table.insert().values(**cleaned))
 
-            row = conn.execute(
-                select(tags_table).where(tags_table.c.id == cleaned["id"])
-            ).mappings().first()
+            row = (
+                conn.execute(select(tags_table).where(tags_table.c.id == cleaned["id"]))
+                .mappings()
+                .first()
+            )
         if not row:
             raise RuntimeError("Failed to persist tag")
         return self._row_to_payload(row)

@@ -19,10 +19,10 @@ def run(cmd, **kwargs):
 
 def main():
     # Ensure pip and build tools are present
-    run([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "build", "wheel"]) 
+    run([sys.executable, "-m", "pip", "install", "--upgrade", "pip", "build", "wheel"])
 
     # Run build without isolation to avoid 'venv' dependency
-    run([sys.executable, "-m", "build", "--no-isolation"]) 
+    run([sys.executable, "-m", "build", "--no-isolation"])
 
 
 if __name__ == "__main__":

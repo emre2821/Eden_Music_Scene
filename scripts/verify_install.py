@@ -27,7 +27,7 @@ def main():
 
     with tempfile.TemporaryDirectory() as td:
         print("Installing wheel into temporary target:", td)
-        run([sys.executable, "-m", "pip", "install", "--upgrade", "pip"]) 
+        run([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
         run([sys.executable, "-m", "pip", "install", "--target", td, wheel])
 
         # Add target to sys.path and try importing entry modules

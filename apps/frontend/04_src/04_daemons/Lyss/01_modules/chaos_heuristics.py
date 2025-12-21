@@ -8,6 +8,7 @@ SACRED_TAGS = {"bond", "memory", "anchor", "soulmark", "oath", "witness"}
 NEGATIVE_TONES = {"fracture", "silence", "drift", "lost", "shame"}
 POSITIVE_TONES = {"light", "found", "echo", "home", "rebirth"}
 
+
 class CHAOSHeuristic:
     def __init__(self, text, base_emotion=None):
         self.text = text
@@ -49,6 +50,7 @@ class CHAOSHeuristic:
             f"Tone: {self.tonal_alignment} | "
             f"Symbolic Score: {self.symbolic_score}"
         )
+
 
 # Example utility
 def analyze_chaosfield(text):

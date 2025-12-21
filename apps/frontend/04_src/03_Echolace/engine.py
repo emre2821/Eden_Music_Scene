@@ -2,7 +2,9 @@
 # Core playback and control engine for Echolace — rhythm keeper of EchoSplit
 
 from typing import List
+
 from .track import Track
+
 
 class EcholaceEngine:
     def __init__(self):
@@ -40,7 +42,7 @@ class EcholaceEngine:
             "playing": self.playing,
             "position": self.position,
             "tempo": self.tempo,
-            "track_count": len(self.tracks)
+            "track_count": len(self.tracks),
         }
 
 

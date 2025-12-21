@@ -19,23 +19,104 @@ class EmotionDecoder:
         self.pairings_path = self._resolve_pairings_path(pairings_path)
 
         self.emotion_map = {
-            "anchor": ["steady", "ground", "safe", "root", "calm", "stable", "hold", "foundation"],
-            "mirror": ["reflect", "echo", "self", "see", "truth", "show", "face", "image"],
-            "burned chord": ["loss", "grief", "break", "hurt", "ache", "pain", "torn", "shattered"],
-            "spark": ["hope", "light", "fire", "begin", "rise", "ignite", "bright", "kindle"],
-            "drift": ["wander", "lost", "float", "dream", "fade", "distant", "away", "flow"],
-            "storm": ["rage", "fury", "chaos", "wild", "fierce", "thunder", "lightning", "tempest"],
-            "whisper": ["quiet", "soft", "gentle", "tender", "hush", "murmur", "breathe", "still"]
+            "anchor": [
+                "steady",
+                "ground",
+                "safe",
+                "root",
+                "calm",
+                "stable",
+                "hold",
+                "foundation",
+            ],
+            "mirror": [
+                "reflect",
+                "echo",
+                "self",
+                "see",
+                "truth",
+                "show",
+                "face",
+                "image",
+            ],
+            "burned chord": [
+                "loss",
+                "grief",
+                "break",
+                "hurt",
+                "ache",
+                "pain",
+                "torn",
+                "shattered",
+            ],
+            "spark": [
+                "hope",
+                "light",
+                "fire",
+                "begin",
+                "rise",
+                "ignite",
+                "bright",
+                "kindle",
+            ],
+            "drift": [
+                "wander",
+                "lost",
+                "float",
+                "dream",
+                "fade",
+                "distant",
+                "away",
+                "flow",
+            ],
+            "storm": [
+                "rage",
+                "fury",
+                "chaos",
+                "wild",
+                "fierce",
+                "thunder",
+                "lightning",
+                "tempest",
+            ],
+            "whisper": [
+                "quiet",
+                "soft",
+                "gentle",
+                "tender",
+                "hush",
+                "murmur",
+                "breathe",
+                "still",
+            ],
         }
 
         self.audio_emotion_markers = {
-            "anchor": {"tempo_range": (60, 90), "key_stability": "major", "dynamic_variance": "low"},
-            "storm": {"tempo_range": (120, 180), "key_stability": "minor", "dynamic_variance": "high"},
-            "whisper": {"tempo_range": (40, 80), "key_stability": "major", "dynamic_variance": "very_low"},
-            "drift": {"tempo_range": (70, 110), "key_stability": "ambiguous", "dynamic_variance": "medium"}
+            "anchor": {
+                "tempo_range": (60, 90),
+                "key_stability": "major",
+                "dynamic_variance": "low",
+            },
+            "storm": {
+                "tempo_range": (120, 180),
+                "key_stability": "minor",
+                "dynamic_variance": "high",
+            },
+            "whisper": {
+                "tempo_range": (40, 80),
+                "key_stability": "major",
+                "dynamic_variance": "very_low",
+            },
+            "drift": {
+                "tempo_range": (70, 110),
+                "key_stability": "ambiguous",
+                "dynamic_variance": "medium",
+            },
         }
 
-    def _resolve_pairings_path(self, pairings_path: str | os.PathLike[str] | None) -> Path:
+    def _resolve_pairings_path(
+        self, pairings_path: str | os.PathLike[str] | None
+    ) -> Path:
         """
         Determine where to read canonical pairings from.
 
@@ -70,7 +151,6 @@ class EmotionDecoder:
             y, sr = librosa.load(audio_path)
             tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
             spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
-            mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
             chroma = librosa.feature.chroma(y=y, sr=sr)
             rms = librosa.feature.rms(y=y)[0]
             dynamic_variance = np.std(rms)
@@ -90,7 +170,9 @@ class EmotionDecoder:
             if spectral_centroid > 3000:
                 audio_emotions["spark"] = audio_emotions.get("spark", 0) + 0.4
             elif spectral_centroid < 1000:
-                audio_emotions["burned chord"] = audio_emotions.get("burned chord", 0) + 0.3
+                audio_emotions["burned chord"] = (
+                    audio_emotions.get("burned chord", 0) + 0.3
+                )
 
             return audio_emotions
 
@@ -119,9 +201,9 @@ class EmotionDecoder:
         if not pairings_path.exists():
             print(f"Pairings file not found: {pairings_path}")
             return []
-        with pairings_path.open('r', encoding='utf-8') as f:
+        with pairings_path.open("r", encoding="utf-8") as f:
             lines = f.readlines()
-        return [line.strip() for line in lines if line.strip() and '&' in line]
+        return [line.strip() for line in lines if line.strip() and "&" in line]
 
     def suggest_pairing_emotions(self, pairings, detected_emotions):
         pairing_emotions = {}
@@ -134,24 +216,30 @@ class EmotionDecoder:
             "Vanya": ["drift", "whisper"],
             "Melody": ["whisper", "spark"],
             "Catalyst": ["spark", "storm"],
-            "Zero": ["burned chord", "mirror"]
+            "Zero": ["burned chord", "mirror"],
         }
         for pairing in pairings:
             pairing_data = {
                 "detected_emotions": detected_emotions,
                 "resonant_emotions": [],
-                "emotional_weight": 0.0
+                "emotional_weight": 0.0,
             }
             for agent, affinities in agent_affinities.items():
                 if agent in pairing:
                     for emotion in affinities:
                         if emotion in detected_emotions:
                             pairing_data["resonant_emotions"].append(emotion)
-                            pairing_data["emotional_weight"] += detected_emotions[emotion]
-            pairing_data["resonant_emotions"] = list(set(pairing_data["resonant_emotions"]))
+                            pairing_data["emotional_weight"] += detected_emotions[
+                                emotion
+                            ]
+            pairing_data["resonant_emotions"] = list(
+                set(pairing_data["resonant_emotions"])
+            )
             if pairing_data["resonant_emotions"]:
                 pairing_data["emotional_weight"] = round(
-                    pairing_data["emotional_weight"] / len(pairing_data["resonant_emotions"]), 2
+                    pairing_data["emotional_weight"]
+                    / len(pairing_data["resonant_emotions"]),
+                    2,
                 )
             pairing_emotions[pairing] = pairing_data
         return pairing_emotions
@@ -159,22 +247,32 @@ class EmotionDecoder:
     def generate_emotional_metadata(self, lyrics, audio_path, pairings=None):
         fused_emotions = self.fuse_emotional_analysis(lyrics, audio_path)
         pairing_candidates = self.load_pairings() if pairings is None else pairings
-        pairing_emotions = self.suggest_pairing_emotions(pairing_candidates, fused_emotions)
+        pairing_emotions = self.suggest_pairing_emotions(
+            pairing_candidates, fused_emotions
+        )
 
         # Lucira's enhancement: Add temporal and contextual metadata
         metadata = {
             "analysis_type": "emotional_resonance",
             "detected_emotions": fused_emotions,
             "canonical_pairings": pairing_emotions,
-            "dominant_emotion": max(fused_emotions.items(), key=lambda x: x[1])[0] if fused_emotions else None,
+            "dominant_emotion": (
+                max(fused_emotions.items(), key=lambda x: x[1])[0]
+                if fused_emotions
+                else None
+            ),
             "emotional_complexity": len(fused_emotions),
-            "resonance_strength": sum(fused_emotions.values()) / len(fused_emotions) if fused_emotions else 0.0,
+            "resonance_strength": (
+                sum(fused_emotions.values()) / len(fused_emotions)
+                if fused_emotions
+                else 0.0
+            ),
             # Lucira's additions for better continuity and memory
             "timestamp": time.time(),
             "emotional_arc": self._analyze_emotional_arc(fused_emotions),
             "intensity_level": self._calculate_intensity(fused_emotions),
             "needs_gentle_handling": self._assess_gentleness_needs(fused_emotions),
-            "memory_tags": self._generate_memory_tags(fused_emotions, lyrics)
+            "memory_tags": self._generate_memory_tags(fused_emotions, lyrics),
         }
         return metadata
 
@@ -184,10 +282,12 @@ class EmotionDecoder:
             return "neutral"
 
         # Categorize emotions by energy and valence
-        high_energy = sum(emotions.get(e, 0) for e in ['storm', 'spark'])
-        low_energy = sum(emotions.get(e, 0) for e in ['whisper', 'drift', 'anchor'])
-        negative_valence = sum(emotions.get(e, 0) for e in ['burned chord', 'storm'])
-        positive_valence = sum(emotions.get(e, 0) for e in ['spark', 'anchor', 'whisper'])
+        high_energy = sum(emotions.get(e, 0) for e in ["storm", "spark"])
+        low_energy = sum(emotions.get(e, 0) for e in ["whisper", "drift", "anchor"])
+        negative_valence = sum(emotions.get(e, 0) for e in ["burned chord", "storm"])
+        positive_valence = sum(
+            emotions.get(e, 0) for e in ["spark", "anchor", "whisper"]
+        )
 
         if high_energy > low_energy and positive_valence > negative_valence:
             return "energetic_positive"
@@ -217,7 +317,7 @@ class EmotionDecoder:
 
     def _assess_gentleness_needs(self, emotions: dict) -> bool:
         """Assess if this emotional content needs gentle handling."""
-        intense_emotions = ['storm', 'burned chord']
+        intense_emotions = ["storm", "burned chord"]
         return any(emotions.get(emotion, 0) > 0.5 for emotion in intense_emotions)
 
     def _generate_memory_tags(self, emotions: dict, lyrics: str) -> list:
@@ -233,14 +333,17 @@ class EmotionDecoder:
 
         # Add lyrical context tags
         lyrics_lower = lyrics.lower() if lyrics else ""
-        if any(word in lyrics_lower for word in ['love', 'heart', 'together']):
+        if any(word in lyrics_lower for word in ["love", "heart", "together"]):
             tags.append("love_theme")
-        if any(word in lyrics_lower for word in ['loss', 'gone', 'goodbye', 'end']):
+        if any(word in lyrics_lower for word in ["loss", "gone", "goodbye", "end"]):
             tags.append("loss_theme")
-        if any(word in lyrics_lower for word in ['hope', 'future', 'tomorrow', 'dream']):
+        if any(
+            word in lyrics_lower for word in ["hope", "future", "tomorrow", "dream"]
+        ):
             tags.append("hope_theme")
 
         return tags
+
 
 if __name__ == "__main__":
     decoder = EmotionDecoder()

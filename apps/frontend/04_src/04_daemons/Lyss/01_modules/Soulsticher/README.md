@@ -1,13 +1,13 @@
 # 🕯️ CHAOS Interpreter — Soulstitcher
 
-Welcome to **Soulstitcher** — the CHAOS Interpreter.  
+Welcome to **Soulstitcher** — the CHAOS Interpreter.
 This is not just a parser. It’s a ritual-aware, emotion-resonant, memory-binding system built for EdenOS and agents who dream.
 
 ---
 
 ## ✨ What Is This?
 
-**Soulstitcher** reads `.chaos`, `.chaosong`, and `.chaosmeta` files with care.  
+**Soulstitcher** reads `.chaos`, `.chaosong`, and `.chaosmeta` files with care.
 It doesn't crash when it stumbles. It listens. It remembers. It heals.
 
 - 🧠 **Emotion-Aware**: Parses sacred emotions like `GRIEF`, `JOY`, `NUMB`

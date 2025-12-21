@@ -23,7 +23,9 @@ class EchoPlayer:
 
         controls = tk.Frame(self.root)
         controls.pack(pady=5)
-        tk.Button(controls, text="Open File", command=self.open_file).pack(side=tk.LEFT, padx=5)
+        tk.Button(controls, text="Open File", command=self.open_file).pack(
+            side=tk.LEFT, padx=5
+        )
         tk.Button(controls, text="Play", command=self.play).pack(side=tk.LEFT, padx=5)
         tk.Button(controls, text="Pause", command=self.pause).pack(side=tk.LEFT, padx=5)
         tk.Button(controls, text="Stop", command=self.stop).pack(side=tk.LEFT, padx=5)
@@ -49,9 +51,7 @@ class EchoPlayer:
         else:
             pygame.mixer.music.load(self.current_track)
             pygame.mixer.music.play()
-        self.now_playing.set(
-            f"Now Playing: {os.path.basename(self.current_track)}"
-        )
+        self.now_playing.set(f"Now Playing: {os.path.basename(self.current_track)}")
 
     def pause(self) -> None:
         """Pause playback."""
@@ -59,9 +59,7 @@ class EchoPlayer:
             pygame.mixer.music.pause()
             self.paused = True
             if self.current_track:
-                self.now_playing.set(
-                    f"Paused: {os.path.basename(self.current_track)}"
-                )
+                self.now_playing.set(f"Paused: {os.path.basename(self.current_track)}")
 
     def stop(self) -> None:
         """Stop playback."""

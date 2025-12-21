@@ -4,6 +4,7 @@
 
 import pygame
 
+
 class Player:
     def __init__(self):
         """Initialize the Pygame mixer for audio playback."""

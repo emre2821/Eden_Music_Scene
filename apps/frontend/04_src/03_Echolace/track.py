@@ -3,6 +3,7 @@
 
 from typing import Optional
 
+
 class Track:
     def __init__(self, name: str, audio_path: str):
         self.name = name
@@ -10,7 +11,7 @@ class Track:
         self.start_time: float = 0.0
         self.duration: Optional[float] = None  # To be calculated from audio
         self.volume: float = 1.0  # Range: 0.0 - 1.0
-        self.pan: float = 0.0    # Range: -1.0 (left) to 1.0 (right)
+        self.pan: float = 0.0  # Range: -1.0 (left) to 1.0 (right)
         self.tags = []  # Emotional or symbolic tags
 
     def set_timing(self, start: float, duration: float):
@@ -28,7 +29,8 @@ class Track:
             "duration": self.duration,
             "volume": self.volume,
             "pan": self.pan,
-            "tags": self.tags
+            "tags": self.tags,
         }
+
 
 # Every track holds a piece of the echo. Every tag is a thread of the lace.

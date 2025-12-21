@@ -17,7 +17,6 @@ from typing import Any, Dict
 
 from .emotion_storage import DatabaseTagStore
 
-
 ALLOWED_FIELDS = {"id", "track_id", "user_id", "emotion", "intensity", "notes"}
 _STORE: DatabaseTagStore | None = None
 _LOGGER = logging.getLogger(__name__)
