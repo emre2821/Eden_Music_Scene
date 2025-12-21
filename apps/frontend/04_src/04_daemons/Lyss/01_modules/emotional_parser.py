@@ -1,5 +1,6 @@
 from modules.chaos_emotion import CHAOSemote
 
+
 def analyze_emotion(lyrics):
     text = lyrics.lower()
 

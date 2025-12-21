@@ -1,8 +1,14 @@
-from pathlib import Path
 import os
 import runpy
+from pathlib import Path
 
-SCRIPT_PATH = Path(__file__).resolve().parent.parent / "apps" / "backend" / "EdenOS_EchoShare" / "eden_share.complete_build.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "apps"
+    / "backend"
+    / "EdenOS_EchoShare"
+    / "eden_share.complete_build.py"
+)
 EXPECTED_BASE = "~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists"
 PLAYLIST_NAME = "you_wanna_fuckin_dance.m3u"
 

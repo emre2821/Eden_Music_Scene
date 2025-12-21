@@ -2,22 +2,19 @@
 # EchoSplit execution entrypoint — designed from Grok's vision.
 # Orchestrates emotional decoding, resonance modeling, DAW editing, and CHAOS metadata output.
 
-import os
 import json
-
-from logic.emotion_decoder import EmotionDecoder
-from logic.resonance import Resonance
-from logic.player import Player
-from logic import analysis
-from logic.adaptive_interface import InterfaceAdapter
-from logic.sovereign_stamp import SovereignStamp
-from logic.production import Production
-from logic import musical_decoder
+import os
 
 from daw.editor import Editor
-from daw.timeline import Timeline
 from daw.engine import Engine
+from daw.timeline import Timeline
 from daw.ui import UI
+from logic.adaptive_interface import InterfaceAdapter
+from logic.emotion_decoder import EmotionDecoder
+from logic.production import Production
+from logic.resonance import Resonance
+from logic.sovereign_stamp import SovereignStamp
+
 
 def process_audio(audio_path: str, lyrics_path: str):
     # Load input
@@ -26,7 +23,7 @@ def process_audio(audio_path: str, lyrics_path: str):
     if not os.path.exists(lyrics_path):
         raise FileNotFoundError(f"Lyrics file not found: {lyrics_path}")
 
-    with open(lyrics_path, 'r', encoding='utf-8') as f:
+    with open(lyrics_path, "r", encoding="utf-8") as f:
         lyrics = f.read()
 
     # Emotional decoding
@@ -37,9 +34,9 @@ def process_audio(audio_path: str, lyrics_path: str):
     try:
         resonator = Resonance()
         resonant_pairs = resonator.find_resonant_pairings(emotional_meta)
-        emotional_meta['resonant_pairs'] = resonant_pairs
+        emotional_meta["resonant_pairs"] = resonant_pairs
     except Exception as e:
-        emotional_meta['resonant_pairs'] = f"Resonance error: {e}"
+        emotional_meta["resonant_pairs"] = f"Resonance error: {e}"
 
     # Interface adaptation
     interface = InterfaceAdapter()
@@ -63,7 +60,7 @@ def process_audio(audio_path: str, lyrics_path: str):
     # Output metadata
     output_path = "outputs/exports/resonance_output.chaosmeta.json"
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(emotional_meta, f, indent=2)
 
     # Optional: audio layering/export (not yet active)
@@ -76,6 +73,7 @@ def process_audio(audio_path: str, lyrics_path: str):
         print(f"[warn] Audio layering skipped: {ex}")
 
     print(f"✅ Full EchoSplit DAW+Emotional analysis complete: {output_path}")
+
 
 def main():
     import argparse
@@ -92,11 +90,14 @@ def main():
 
     audio_path = args.audio
     if not audio_path:
-        parser.error("Audio path must be provided via --audio flag or AUDIO_PATH environment variable.")
+        parser.error(
+            "Audio path must be provided via --audio flag or AUDIO_PATH environment variable."
+        )
 
     lyrics_path = args.lyrics
 
     process_audio(audio_path, lyrics_path)
+
 
 if __name__ == "__main__":
     main()

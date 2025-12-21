@@ -5,9 +5,9 @@ from __future__ import annotations
 import http.client
 import json
 import threading
-from pathlib import Path
 from contextlib import contextmanager
 from http.server import HTTPServer
+from pathlib import Path
 from typing import Generator
 
 import pytest
@@ -66,11 +66,15 @@ def running_service(store: DatabaseTagStore) -> Generator[tuple[str, int], None,
         store.clear()
 
 
-def _request(host: str, port: int, method: str, path: str, body: object | None = None) -> tuple[int, dict]:
+def _request(
+    host: str, port: int, method: str, path: str, body: object | None = None
+) -> tuple[int, dict]:
     payload: bytes | None = None
     headers = {}
     if body is not None:
-        payload = json.dumps(body).encode("utf-8") if not isinstance(body, bytes) else body
+        payload = (
+            json.dumps(body).encode("utf-8") if not isinstance(body, bytes) else body
+        )
         headers["Content-Type"] = "application/json"
 
     conn = http.client.HTTPConnection(host, port, timeout=5)
@@ -95,7 +99,9 @@ def test_get_tags_initially_empty(store: DatabaseTagStore) -> None:
 def test_rejects_invalid_json(store: DatabaseTagStore) -> None:
     with running_service(store) as (host, port):
         conn = http.client.HTTPConnection(host, port, timeout=5)
-        conn.request("POST", "/tags", body=b"{" , headers={"Content-Type": "application/json"})
+        conn.request(
+            "POST", "/tags", body=b"{", headers={"Content-Type": "application/json"}
+        )
         response = conn.getresponse()
         assert response.status == 400
         assert json.loads(response.read()) == {"error": "invalid json"}
@@ -110,12 +116,23 @@ def test_rejects_invalid_json(store: DatabaseTagStore) -> None:
         ({"track_id": 101, "emotion": "joy"}, "track_id must be a non-empty string"),
         ({"track_id": "abc", "emotion": 5}, "emotion must be a non-empty string"),
         ({"track_id": "abc", "emotion": "joy", "extra": 1}, "unexpected field"),
-        ({"track_id": "abc", "emotion": "joy", "intensity": 4}, "intensity must be between 0 and 1"),
-        ({"track_id": "abc", "emotion": "joy", "intensity": "high"}, "intensity must be a number"),
-        ({"track_id": "abc", "emotion": "joy", "intensity": True}, "intensity must be a number"),
+        (
+            {"track_id": "abc", "emotion": "joy", "intensity": 4},
+            "intensity must be between 0 and 1",
+        ),
+        (
+            {"track_id": "abc", "emotion": "joy", "intensity": "high"},
+            "intensity must be a number",
+        ),
+        (
+            {"track_id": "abc", "emotion": "joy", "intensity": True},
+            "intensity must be a number",
+        ),
     ],
 )
-def test_rejects_invalid_payloads(payload: dict, expected_message: str, store: DatabaseTagStore) -> None:
+def test_rejects_invalid_payloads(
+    payload: dict, expected_message: str, store: DatabaseTagStore
+) -> None:
     with running_service(store) as (host, port):
         status, body = _request(host, port, "POST", "/tags", body=payload)
         assert status == 400

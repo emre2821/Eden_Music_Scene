@@ -7,43 +7,50 @@ environment variable (comma-separated). Render output is written to the director
 specified by ``--render-dir`` or ``ECHO_RENDER_DIR``.
 """
 
-import os
-import json
 import argparse
+import json
+import os
 from datetime import datetime
-import matplotlib.pyplot as plt
+
 import librosa
 import librosa.display
-
+import matplotlib.pyplot as plt
 from analyzer import generate_analysis_json
 
 THREAD_TAG = "EchoesOfEdenMemory"
 RENDER_DIR = os.getenv("ECHO_RENDER_DIR", "renders")
 
+
 def render_waveform(y, sr, label):
     plt.figure(figsize=(10, 4))
     librosa.display.waveshow(y, sr=sr, alpha=0.8)
-    plt.title(f"Waveform – {label}", color='lavender')
+    plt.title(f"Waveform – {label}", color="lavender")
     plt.xlabel("Time (s)")
     plt.ylabel("Amplitude")
     plt.tight_layout()
-    render_path = os.path.join(RENDER_DIR, f"{label.replace(' ', '_').lower()}_waveform.png")
+    render_path = os.path.join(
+        RENDER_DIR, f"{label.replace(' ', '_').lower()}_waveform.png"
+    )
     plt.savefig(render_path)
     plt.close()
     print(f"📈 Saved waveform: {render_path}")
+
 
 def render_spectrogram(y, sr, label):
     X = librosa.stft(y)
     Xdb = librosa.amplitude_to_db(abs(X))
     plt.figure(figsize=(10, 4))
-    librosa.display.specshow(Xdb, sr=sr, x_axis='time', y_axis='hz', cmap='magma')
-    plt.colorbar(format='%+2.0f dB')
-    plt.title(f"Spectrogram – {label}", color='lavender')
+    librosa.display.specshow(Xdb, sr=sr, x_axis="time", y_axis="hz", cmap="magma")
+    plt.colorbar(format="%+2.0f dB")
+    plt.title(f"Spectrogram – {label}", color="lavender")
     plt.tight_layout()
-    render_path = os.path.join(RENDER_DIR, f"{label.replace(' ', '_').lower()}_spectrogram.png")
+    render_path = os.path.join(
+        RENDER_DIR, f"{label.replace(' ', '_').lower()}_spectrogram.png"
+    )
     plt.savefig(render_path)
     plt.close()
     print(f"🌈 Saved spectrogram: {render_path}")
+
 
 def log_chaos_memory(result, source_file, title):
     shortname = os.path.splitext(os.path.basename(source_file))[0]
@@ -73,6 +80,7 @@ def log_chaos_memory(result, source_file, title):
 
     print(f"\n📝 CHAOS memory log saved as: {log_name}")
 
+
 def test_file(path, label):
     print(f"\n🎧 Analyzing: {label} ({path})\n")
     try:
@@ -84,6 +92,7 @@ def test_file(path, label):
         log_chaos_memory(result, path, label)
     except Exception as e:
         print(f"❌ Error analyzing {label}: {e}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

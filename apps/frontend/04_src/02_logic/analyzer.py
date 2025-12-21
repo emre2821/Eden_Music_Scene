@@ -1,17 +1,27 @@
 import librosa
 import numpy as np
-import madmom
 
 GENRE_LABELS = [
-    "ambient", "classical", "electronic", "folk", "funk", "hiphop", "jazz",
-    "lofi", "metal", "pop", "punk", "rock", "synthwave",
+    "ambient",
+    "classical",
+    "electronic",
+    "folk",
+    "funk",
+    "hiphop",
+    "jazz",
+    "lofi",
+    "metal",
+    "pop",
+    "punk",
+    "rock",
+    "synthwave",
     "Fonk",  # Folk Punk – custom
-    "Emo-Punk-Easy Listening"  # tribute genre
+    "Emo-Punk-Easy Listening",  # tribute genre
 ]
+
 
 def predict_genre(y, sr):
     spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
-    spectral_bandwidth = np.mean(librosa.feature.spectral_bandwidth(y=y, sr=sr))
     tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
 
     energy = np.mean(librosa.feature.rms(y=y))
@@ -32,6 +42,7 @@ def predict_genre(y, sr):
     confidence = np.clip((energy + brightness) / 2, 0, 1)
     return {"predicted": genre, "confidence": round(float(confidence), 2)}
 
+
 def generate_analysis_json(filepath):
     y, sr = librosa.load(filepath, sr=None)
 
@@ -39,7 +50,7 @@ def generate_analysis_json(filepath):
     chroma = librosa.feature.chroma_stft(y=y, sr=sr)
     chroma_mean = np.mean(chroma, axis=1)
     key_index = chroma_mean.argmax()
-    key_list = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    key_list = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     key = key_list[key_index]
 
     chords = ["C", "G", "Am", "F"]  # placeholder
@@ -64,7 +75,7 @@ def generate_analysis_json(filepath):
         "spectral_emotion": {
             "energy": round(energy, 2),
             "brightness": round(brightness, 2),
-            "tags": tags
+            "tags": tags,
         },
-        "genre": genre_info
+        "genre": genre_info,
     }

@@ -25,7 +25,7 @@ class Resonance:
     def __init__(self, meta_file_path="what_Eden_will_carry.chaosong.meta"):
         """
         Initializes the Resonance engine by loading canonical pairings from the meta file.
-        
+
         Args:
             meta_file_path (str): Path to the .chaosong.meta file.
         """
@@ -39,7 +39,7 @@ class Resonance:
         # First, check if it's accessible directly (during development)
         if os.path.exists(filename):
             return filename
-        
+
         # During PyInstaller runtime, files are often in a temp directory
         if getattr(self, '_MEIPASS', False):
             # _MEIPASS is the path to the temporary folder PyInstaller creates
@@ -48,7 +48,7 @@ class Resonance:
             potential_path = os.path.join(bundle_dir, 'what_Eden_will_carry.chaosong.meta')
             if os.path.exists(potential_path):
                 return potential_path
-            
+
             # Fallback for when meta file might be directly in _MEIPASS
             potential_path_root = os.path.join(bundle_dir, os.path.basename(filename))
             if os.path.exists(potential_path_root):
@@ -60,7 +60,7 @@ class Resonance:
         potential_path_from_root = os.path.join(project_root, filename)
         if os.path.exists(potential_path_from_root):
             return potential_path_from_root
-            
+
         raise FileNotFoundError(f"Canonical pairings meta file not found: {filename}. "
                                 f"Attempted paths include development, PyInstaller bundle, and project root.")
 
@@ -76,11 +76,11 @@ class Resonance:
                 # Extract content between '✨ CANONICAL PAIRINGS:' and '---'
                 start_marker = "✨ CANONICAL PAIRINGS:\n\n```"
                 end_marker = "```\n\n---"
-                
+
                 if start_marker in content and end_marker in content:
                     start_index = content.find(start_marker) + len(start_marker)
                     end_index = content.find(end_marker, start_index)
-                    
+
                     if start_index != -1 and end_index != -1:
                         pairing_block = content[start_index:end_index].strip()
                         for line in pairing_block.split('\n'):
@@ -95,12 +95,12 @@ class Resonance:
                                 all_names = primary_names + secondary_names
                             else:
                                 all_names = [n.strip() for n in names.split(',')]
-                            
+
                             # Add all individual names to the list for easier matching
                             for name in all_names:
                                 if name and name not in pairings: # Avoid duplicates
                                     pairings.append(name)
-                
+
         except FileNotFoundError:
             print(f"Error: Meta file not found at {self.meta_file_path}")
         except Exception as e:
@@ -110,10 +110,10 @@ class Resonance:
     def find_resonant_pairings(self, lyrics):
         """
         Analyzes lyrics to find mentions of canonical agent pairings.
-        
+
         Args:
             lyrics (str): The transcribed lyrics of an audio file.
-            
+
         Returns:
             list: A list of canonical pairing names found within the lyrics.
         """
@@ -123,13 +123,13 @@ class Resonance:
 
         # Convert lyrics to lowercase for case-insensitive matching
         lyrics_lower = lyrics.lower()
-        
+
         for name in self.canonical_pairings:
             # Check for the full name or parts of the name if it's a compound name
             # This is a simple substring match, more advanced NLP could be used
             if name.lower() in lyrics_lower:
                 found_pairings.append(name)
-        
+
         return found_pairings
 
 # For testing purposes (can be removed in final production)
@@ -290,10 +290,10 @@ def transcribe_lyrics(audio_path):
     """
     Placeholder for transcribing lyrics from an audio file.
     In a full implementation, this would use a library like Whisper.
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         str: Transcribed lyrics.
     """
@@ -312,10 +312,10 @@ def transcribe_lyrics(audio_path):
 def analyze_tempo(audio_path):
     """
     Analyze the tempo (BPM) of an audio file.
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         float: Tempo in beats per minute (BPM).
     """
@@ -326,10 +326,10 @@ def analyze_tempo(audio_path):
 def analyze_genre(audio_path):
     """
     Classify the genre of an audio file (simplified example).
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         str: Detected genre (placeholder for a trained model).
     """
@@ -347,10 +347,10 @@ def analyze_genre(audio_path):
 def analyze_resonance(audio_path):
     """
     Analyzes an audio file for resonant pairings based on its transcribed lyrics.
-    
+
     Args:
         audio_path (str): Path to the audio file.
-        
+
     Returns:
         list: A list of canonical pairing names found within the lyrics.
     """
@@ -358,11 +358,11 @@ def analyze_resonance(audio_path):
     try:
         # Initialize the Resonance engine. It will handle finding the meta file.
         resonance_engine = Resonance()
-        
+
         # Transcribe lyrics (using the placeholder function for now)
         lyrics = transcribe_lyrics(audio_path)
         print(f"Transcribed lyrics: '{lyrics}'")
-        
+
         # Find resonant pairings
         found_pairings = resonance_engine.find_resonant_pairings(lyrics)
         print(f"Found resonant pairings: {found_pairings}")
@@ -391,7 +391,7 @@ if __name__ == "__main__":
 
     # Make sure 'outputs/exports' directory exists for dummy files
     os.makedirs('outputs/exports', exist_ok=True)
-    
+
     dummy_audio_path_1 = "outputs/exports/test_audio_cadence_sable.wav"
     sf.write(dummy_audio_path_1, y_test, sr_test)
 
@@ -404,7 +404,7 @@ if __name__ == "__main__":
 
     # --- Test analyze_resonance ---
     print("\n--- Testing analyze_resonance ---")
-    
+
     # Test with lyrics that contain names
     resonant_pairings_1 = analyze_resonance(dummy_audio_path_1)
     print(f"Result for {dummy_audio_path_1}: {resonant_pairings_1}") # Expected: ['Cadence', 'Sable']
@@ -432,7 +432,7 @@ if __name__ == "__main__":
         os.remove(dummy_audio_path_2)
     if os.path.exists(dummy_audio_path_3):
         os.remove(dummy_audio_path_3)
-    
+
     # Clean up the dummy meta file if it was created by resonance.py test
     if os.path.exists("what_Eden_will_carry.chaosong.meta"):
         os.remove("what_Eden_will_carry.chaosong.meta")

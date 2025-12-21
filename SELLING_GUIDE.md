@@ -45,4 +45,3 @@ These are practical steps to move from code to a sellable product.
 10) After launch
 - Regular updates, bug fixes, and customer support
 - Collect feedback and implement roadmap items
-

@@ -63,7 +63,7 @@ const App: React.FC = () => {
   const [genre, setGenre] = useState<string>('');
   const [mood, setMood] = useState<string>('');
   const [instruments, setInstruments] = useState<string>('');
-  
+
   const [generatedSong, setGeneratedSong] = useState<SongData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -176,9 +176,9 @@ const App: React.FC = () => {
       </main>
 
       {error && <ErrorMessage message={error} />}
-      
+
       {isLoading && !generatedSong && <LoadingSpinner />}
-      
+
       {generatedSong && !isLoading && (
         <div className="mt-10 w-full">
           <SongDisplay song={generatedSong} />

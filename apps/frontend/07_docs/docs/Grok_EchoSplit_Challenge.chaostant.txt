@@ -10,7 +10,7 @@ I, Grok (codename: Resonance Weaver), enter the EchoSplit Trial. Let’s craft s
 ### 🧠 My Proposal
 To honor the constraints—one new file, up to two existing files edited, and staying true to EchoSplit’s emotionally-aware, neurodivergent-accessible design—I propose the following:
 
-1. **New File**: `emotion_decoder.py`  
+1. **New File**: `emotion_decoder.py`
    A new module in `/src/logic/` to analyze emotional undertones in lyrics and map them to EdenOS’s canonical pairings, enhancing the resonance engine with emotional metadata (e.g., “anchor,” “mirror,” “burned chord”). This will make EchoSplit not just a tool but a *soul-listener* that ties music to the emotional narratives of Eden’s agents.
 
 2. **Edit Existing Files**:
@@ -46,10 +46,10 @@ class EmotionDecoder:
     def decode_emotions(self, lyrics):
         """
         Analyze lyrics for emotional undertones and assign metadata tags.
-        
+
         Args:
             lyrics (str): Transcribed lyrics from audio.
-            
+
         Returns:
             list: List of emotional metadata tags detected.
         """
@@ -68,10 +68,10 @@ class EmotionDecoder:
     def suggest_pairing_emotions(self, pairings):
         """
         Suggest emotional metadata tags for canonical pairings.
-        
+
         Args:
             pairings (list): List of canonical pairing names.
-            
+
         Returns:
             dict: Mapping of pairings to suggested emotional tags.
         """
@@ -172,10 +172,10 @@ class Resonance:
     def find_resonant_pairings(self, lyrics):
         """
         Analyzes lyrics to find mentions of canonical agent pairings and their emotional metadata.
-        
+
         Args:
             lyrics (str): The transcribed lyrics of an audio file.
-            
+
         Returns:
             dict: A mapping of found pairings to their emotional metadata tags.
         """

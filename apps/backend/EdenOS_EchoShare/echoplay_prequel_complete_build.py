@@ -15,9 +15,9 @@ from urllib.parse import quote_plus
 # Kivy imports (optional, will fallback to CLI if unavailable)
 try:
     from kivy.clock import Clock
-    from kivymd.app import MDApp
     from kivy.metrics import dp
     from kivy.uix.scrollview import ScrollView
+    from kivymd.app import MDApp
     from kivymd.uix.boxlayout import MDBoxLayout
     from kivymd.uix.button import MDIconButton, MDRaisedButton
     from kivymd.uix.dialog import MDDialog
@@ -31,21 +31,6 @@ try:
 except ImportError:
     GUI_AVAILABLE = False
 
-    class MDApp:  # type: ignore[override]
-        def run(self):  # pragma: no cover - GUI stub
-            raise RuntimeError("GUI components are unavailable on this system.")
-
-    class MDRaisedButton:  # pragma: no cover - GUI stub
-        def __init__(self, *args, **kwargs):
-            pass
-
-    class MDDialog:  # pragma: no cover - GUI stub
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def open(self):
-            raise RuntimeError("GUI components are unavailable on this system.")
-
     class ThreeLineListItem:  # pragma: no cover - GUI stub
         def __init__(self, *args, **kwargs):
             pass
@@ -53,17 +38,11 @@ except ImportError:
         def add_widget(self, *args, **kwargs):
             pass
 
-    class MDScreen:  # pragma: no cover - GUI stub
-        pass
-
-    class MDIconButton:  # pragma: no cover - GUI stub
-        def __init__(self, *args, **kwargs):
-            pass
-
     class Clock:  # pragma: no cover - GUI stub
         @staticmethod
         def schedule_once(*args, **kwargs):
             raise RuntimeError("GUI components are unavailable on this system.")
+
     def dp(value):
         return value
 
@@ -141,6 +120,7 @@ except ImportError:
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
             self.text = kwargs.get("text", "")
+
 
 # External features (optional)
 try:
@@ -408,7 +388,9 @@ class PlaylistCLI:
                 if AI_AVAILABLE:
                     print("AI model not loaded yet; using rule-based generator.")
                 else:
-                    print("AI features unavailable; using bundled rule-based generator.")
+                    print(
+                        "AI features unavailable; using bundled rule-based generator."
+                    )
             self.current_playlist = songs
             for i, song in enumerate(songs, 1):
                 print(f"{i:2d}. {song['artist']} - {song['title']}")

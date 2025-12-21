@@ -1,9 +1,10 @@
 import os  # Access environment variables and path utilities during playlist generation
 from pathlib import Path
 
-
 BASE_DIR_ENV_VAR = "EDEN_ECHOSHARE_PLAYLIST_BASE_DIR"
-DEFAULT_BASE_DIR = Path("~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists")
+DEFAULT_BASE_DIR = Path(
+    "~/EdenOS_Mobile/5_deployments/projects/EdenOS_EchoShare/playlists"
+)
 PLAYLIST_NAME = "you_wanna_fuckin_dance.m3u"
 
 

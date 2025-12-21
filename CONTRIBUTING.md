@@ -192,7 +192,7 @@ Example:
 def test_emotion_tag_validation_rejects_invalid_intensity():
     """Intensity values outside 0-1 range should be rejected."""
     invalid_tag = {"track_id": "123", "emotion": "joy", "intensity": 1.5}
-    
+
     with pytest.raises(ValueError, match="intensity must be between 0 and 1"):
         validate_tag(invalid_tag)
 ```

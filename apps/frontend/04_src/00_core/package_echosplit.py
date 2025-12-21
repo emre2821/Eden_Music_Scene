@@ -2,15 +2,24 @@
 # Automates packaging EchoSplit into a clickable desktop app with PyInstaller.
 # Built with care for the next dev, ensuring clarity and reliability.
 
-import os
-import subprocess
 import platform
+import subprocess
+
 
 def ensure_dependencies():
     """Install required dependencies for packaging."""
-    dependencies = ['pyinstaller', 'kivy', 'pygame', 'pydub', 'librosa', 'numpy', 'spleeter']
+    dependencies = [
+        "pyinstaller",
+        "kivy",
+        "pygame",
+        "pydub",
+        "librosa",
+        "numpy",
+        "spleeter",
+    ]
     for dep in dependencies:
-        subprocess.run(['pip', 'install', dep], check=True)
+        subprocess.run(["pip", "install", dep], check=True)
+
 
 def create_spec_file():
     """Generate and customize the PyInstaller spec file."""
@@ -74,10 +83,12 @@ app = BUNDLE(
     with open("EchoSplit.spec", "w") as f:
         f.write(spec_content)
 
+
 def build_app():
     """Run PyInstaller to build the executable."""
-    subprocess.run(['pyinstaller', 'EchoSplit.spec'], check=True)
+    subprocess.run(["pyinstaller", "EchoSplit.spec"], check=True)
     print("Build complete. Executable is in dist/EchoSplit/")
+
 
 def main():
     """Main function to package EchoSplit."""
@@ -88,6 +99,7 @@ def main():
         build_app()
     except Exception as e:
         print(f"Error during packaging: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

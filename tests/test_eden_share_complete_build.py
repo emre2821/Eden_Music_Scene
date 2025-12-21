@@ -1,11 +1,13 @@
-import os
 import runpy
 
 
 def test_playlist_created(tmp_path, monkeypatch):
     monkeypatch.setenv("EDEN_ECHOSHARE_PLAYLIST_BASE_DIR", str(tmp_path))
 
-    runpy.run_path("apps/backend/EdenOS_EchoShare/eden_share.complete_build.py", run_name="__main__")
+    runpy.run_path(
+        "apps/backend/EdenOS_EchoShare/eden_share.complete_build.py",
+        run_name="__main__",
+    )
 
     playlist_path = tmp_path / "you_wanna_fuckin_dance.m3u"
     assert playlist_path.exists(), "Playlist file was not created"
@@ -22,7 +24,8 @@ def test_playlist_respects_home_env(tmp_path, monkeypatch):
     monkeypatch.setenv("HOME", str(new_home))
 
     result = runpy.run_path(
-        "apps/backend/EdenOS_EchoShare/eden_share.complete_build.py", run_name="__main__"
+        "apps/backend/EdenOS_EchoShare/eden_share.complete_build.py",
+        run_name="__main__",
     )
 
     default_base_dir = result["DEFAULT_BASE_DIR"]

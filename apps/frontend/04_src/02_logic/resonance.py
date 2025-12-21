@@ -4,14 +4,17 @@
 import os
 from typing import Dict, List, Optional
 
+
 class Resonance:
     def __init__(self, pairings_path: Optional[str] = None):
-        self.pairings_path = pairings_path or os.path.join(os.path.dirname(__file__), "..", "..", "data", "canonical_pairings.chaos")
+        self.pairings_path = pairings_path or os.path.join(
+            os.path.dirname(__file__), "..", "..", "data", "canonical_pairings.chaos"
+        )
         self.pairings = self._load_pairings()
 
     def _load_pairings(self) -> List[str]:
         try:
-            with open(self.pairings_path, 'r', encoding='utf-8') as f:
+            with open(self.pairings_path, "r", encoding="utf-8") as f:
                 raw = f.read()
                 return [line.strip() for line in raw.splitlines() if "&" in line]
         except Exception as e:

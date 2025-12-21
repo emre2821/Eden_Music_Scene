@@ -11,9 +11,7 @@ def main(argv=None) -> None:
     with the provided arguments.
     """
 
-    script_path = (
-        Path(__file__).resolve().parent / "04_src" / "00_core" / "main.py"
-    )
+    script_path = Path(__file__).resolve().parent / "04_src" / "00_core" / "main.py"
     if argv is not None:
         sys.argv = [str(script_path)] + list(argv)
     runpy.run_path(str(script_path), run_name="__main__")

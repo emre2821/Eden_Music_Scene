@@ -3,7 +3,6 @@ import sys
 import types
 from unittest.mock import Mock
 
-
 MODULE_PATH = "apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build"
 
 
@@ -52,7 +51,12 @@ def test_generate_playlist_uses_ai_when_loaded(monkeypatch, capsys):
     mock_curator = Mock()
     mock_curator.is_loaded.return_value = True
     expected_playlist = [
-        {"artist": "Echo Star", "title": "Nebula Drift", "genre": "Synth", "reason": "AI"}
+        {
+            "artist": "Echo Star",
+            "title": "Nebula Drift",
+            "genre": "Synth",
+            "reason": "AI",
+        }
     ]
     mock_curator.generate_playlist_with_ai.return_value = expected_playlist
     cli.ai_curator = mock_curator
@@ -68,6 +72,7 @@ def test_generate_playlist_uses_ai_when_loaded(monkeypatch, capsys):
     output = capsys.readouterr().out
     assert "AI model not loaded yet; using rule-based generator." not in output
     assert "AI features unavailable; using bundled rule-based generator." not in output
+
 
 def test_generate_playlist_ai_curator_missing_is_loaded(monkeypatch, capsys):
     module = load_module(monkeypatch)
@@ -86,6 +91,7 @@ def test_generate_playlist_ai_curator_missing_is_loaded(monkeypatch, capsys):
     # Should fallback to rule-based generator
     output = capsys.readouterr().out
     assert "using rule-based generator" in output
+
 
 def test_generate_playlist_ai_curator_is_loaded_not_callable(monkeypatch, capsys):
     module = load_module(monkeypatch)
@@ -127,9 +133,7 @@ def test_generate_playlist_falls_back_when_model_not_loaded(monkeypatch, capsys)
             return expected_playlist
 
     generator_instance = DummyGenerator()
-    dummy_module = types.SimpleNamespace(
-        MusicTopicGenerator=lambda: generator_instance
-    )
+    dummy_module = types.SimpleNamespace(MusicTopicGenerator=lambda: generator_instance)
     monkeypatch.setitem(sys.modules, "apps.backend.music_topic_gen", dummy_module)
 
     inputs = iter(["Starlight", "1"])
