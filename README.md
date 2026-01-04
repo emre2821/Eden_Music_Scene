@@ -1,6 +1,6 @@
 # Eden Music Scene
 
-![CI](https://github.com/emre2821/Eden_Music_Scene/actions/workflows/test.yml/badge.svg)
+![CI](https://github.com/emre2821/Eden_Music_Scene/actions/workflows/ultimate.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
 
