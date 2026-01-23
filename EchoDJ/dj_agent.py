@@ -34,7 +34,7 @@ def build_yt_dlp_search_command(query: str) -> list[str]:
 
 
 class AIDJApp:
-    """Tiny Tk based interface for searching and downloading music."""
+    """Tiny Tk-based interface for searching and downloading music."""
 
     def __init__(self, master: tk.Misc) -> None:
         self.master = master
@@ -164,17 +164,19 @@ class AIDJApp:
             except json.JSONDecodeError:  # pragma: no cover - defensive
                 continue
 
-        # Populate the listbox with ``title - uploader`` pairs
+        # Populate the listbox with ``title – uploader`` pairs
         self.results_list.delete(0, tk.END)
         for info in self.current_results:
             title = info.get("title", "Unknown Title")
             uploader = info.get("uploader", "Unknown Artist")
-            self.results_list.insert(tk.END, f"{title} - {uploader}")
+            self.results_list.insert(tk.END, f"{title} – {uploader}")
 
         self.current_video_info = None
         self.download_button.config(state=tk.DISABLED)
         if self.current_results:
-            self.update_status(f"Found {len(self.current_results)} result(s). Select one to download.")
+            self.update_status(
+                f"Found {len(self.current_results)} result(s). Select one to download."
+            )
         else:
             self.update_status("No results found.")
 
@@ -194,14 +196,17 @@ class AIDJApp:
         self.download_button.config(state=tk.NORMAL)
 
     def prompt_download(self) -> None:
-        """Ask the user to confirm downloading the selected item."""
+        """Download the currently highlighted item in the results list."""
 
-        if not self.current_video_info:
+        selection = self.results_list.curselection()
+        if not selection:
             messagebox.showinfo("No Selection", "Please select a track to download.")
             return
 
-        title = self.current_video_info.get("title", "Unknown Title")
-        uploader = self.current_video_info.get("uploader", "Unknown Artist")
+        index = selection[0]
+        info = self.current_results[index]
+        title = info.get("title", "Unknown Title")
+        uploader = info.get("uploader", "Unknown Artist")
 
         if not messagebox.askyesno(
             "Download Confirmation", f"Do you want to download '{title}' by '{uploader}'?"
@@ -210,10 +215,23 @@ class AIDJApp:
 
         self.update_status(f"Starting download for '{title}'...")
 
-        # This example does not implement real downloading to keep the
-        # code concise.  Instead we append a line to the progress list so
-        # the user can see that the action was triggered.
-        self.progress_list.insert(tk.END, f"Downloaded: {title} - {uploader}")
+        url = info.get("webpage_url")
+        if url:
+            download_cmd = [
+                "yt-dlp",
+                "-o",
+                os.path.join(self.download_directory, "%(title)s.%(ext)s"),
+                url,
+            ]
+            proc = subprocess.run(
+                download_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            if proc.returncode != 0:  # pragma: no cover - depends on network
+                messagebox.showerror("Download Error", proc.stderr.decode())
+                self.update_status("Download failed.")
+                return
+
+        self.progress_list.insert(tk.END, f"Downloaded: {title} – {uploader}")
         self.update_status("Download complete.")
 
 
