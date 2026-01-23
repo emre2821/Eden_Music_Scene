@@ -182,3 +182,7 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Local OAuth secrets
+EchoPlay/secrets/
+youtube_token.json

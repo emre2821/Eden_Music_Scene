@@ -6,20 +6,6 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
 
-# ✅ Path to your client_secret file supplied via env var
-CLIENT_SECRET_FILE = os.getenv("YOUTUBE_CLIENT_SECRET_FILE")
-TOKEN_FILE = "youtube_token.json"
-
-if not CLIENT_SECRET_FILE:
-    raise RuntimeError(
-        "Missing YOUTUBE_CLIENT_SECRET_FILE environment variable.\n"
-        "Set it to the full path of your OAuth client secret JSON file."
-    )
-
-if not os.path.exists(CLIENT_SECRET_FILE):
-    raise FileNotFoundError(
-        f"Could not find client secret file at {CLIENT_SECRET_FILE}. "
-        "Check the path or update YOUTUBE_CLIENT_SECRET_FILE."
     )
 
 # 🔐 Scopes: grant permissions to manage your YouTube account
@@ -59,3 +45,4 @@ youtube = build('youtube', 'v3', credentials=credentials)
 response = youtube.channels().list(part='snippet', mine=True).execute()
 channel_name = response['items'][0]['snippet']['title']
 print(f"\n✅ OAuth Success! You are logged in as: {channel_name}")
+
