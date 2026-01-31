@@ -2,7 +2,7 @@ import io
 
 import pytest
 
-from apps.backend import emotion_tags_client as client
+from shared.emotion import emotion_tags_client as client
 
 
 class _FakeResponse:

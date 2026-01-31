@@ -1,4 +1,4 @@
-from apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build import (
+from shared.echoshare.echoplay_prequel_complete_build import (
     PlaylistApp,
 )
 

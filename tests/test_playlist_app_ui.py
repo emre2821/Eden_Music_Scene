@@ -1,6 +1,6 @@
 """Smoke tests ensuring the GUI app can be instantiated."""
 
-from apps.backend.EdenOS_EchoShare.echoplay_prequel_complete_build import PlaylistApp
+from shared.echoshare.echoplay_prequel_complete_build import PlaylistApp
 
 
 def _build_app():

@@ -12,8 +12,8 @@ from typing import Generator
 
 import pytest
 
-from apps.backend import emotion_service
-from apps.backend.emotion_storage import DatabaseTagStore
+from shared.emotion import emotion_service
+from shared.emotion.emotion_storage import DatabaseTagStore
 
 
 @pytest.mark.parametrize("env_value", ["", "   "])
