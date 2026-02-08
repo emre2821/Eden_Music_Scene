@@ -22,14 +22,14 @@ ALLOWED_FIELDS = {"id", "track_id", "user_id", "emotion", "intensity", "notes"}
 _STORE: DatabaseTagStore | None = None
 _LOGGER = logging.getLogger(__name__)
 
-log_chaos_emotion(tag: Dict[str, Any]) -> None:
+
+def log_chaos_emotion(tag: Dict[str, Any]) -> None:
     """Log emotion tag in CHAOS format for native CHAOS integration."""
     log_file = Path(__file__).parent / "emotion_logs.chaos"
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"#CHAOS emotion: {json.dumps(tag)}\n")
 
 
-def _
 def _get_store() -> DatabaseTagStore:
     """Lazily construct or return the configured tag store."""
 
@@ -137,7 +137,6 @@ class EmotionTagHandler(BaseHTTPRequestHandler):
             return
 
         try:
-        _log_chaos_emotion(stored)
             tag = _validate_tag_payload(raw_payload)
         except ValueError as exc:
             self._send_json({"error": str(exc)}, status=400)
@@ -146,6 +145,7 @@ class EmotionTagHandler(BaseHTTPRequestHandler):
         tag_id = tag.get("id") or str(uuid.uuid4())
         tag["id"] = tag_id
         stored = _get_store().upsert_tag(dict(tag))
+        log_chaos_emotion(stored)
         self._send_json(stored, status=201)
 
 
