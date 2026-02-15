@@ -4,7 +4,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
 
-Welcome to the resonance lab where EchoSplit, EchoDJ, EchoPlay, and their
+Welcome to Echolace DI's resonance lab where EchoSplit, EchoDJ, EchoPlay, and their
 supporting spirits are woven together. This repository holds the shared
 infrastructure for crafting, tagging, and releasing emotionally aware music
 experiences inside Paradigm Eden.
